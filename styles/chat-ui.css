@@ -158,9 +158,12 @@
 }
 
 .yt-dm-chat-footer {
-    padding: 8px 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
+    padding: 8px 8px 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 0;
 }
 
 .yt-dm-input-wrapper {
@@ -168,6 +171,8 @@
     width: 100%;
     display: flex;
     align-items: center;
+    flex-grow: 1;
+    gap: 0;
 }
 
 .yt-dm-message-input {
@@ -394,4 +399,20 @@
 
 .yt-dm-dialog-item.unread .name {
     font-weight: 700;
+}
+
+.share-video-button {
+    flex-shrink: 0;
+    fill: #aaaaaa;
+    margin-left: 4px;
+}
+
+.share-video-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    fill: #ffffff;
+}
+
+.share-video-button:disabled {
+    fill: #555555;
+    cursor: not-allowed;
 }

@@ -8,6 +8,8 @@ import { updateReadTimestamp } from '../../storage';
 import { QueryDocumentSnapshot } from '../../libs/firebase/firebase-firestore.js';
 import { auth } from '../../firebase/firebase-config';
 import { Timestamp } from '../../libs/firebase/firebase-firestore.js';
+import { parseVideoIdFromUrl, fetchYouTubeVideoDetails } from '../utils/youtube';
+import { createShareIcon } from '../components/icons';
 
 function clearElement(el: HTMLElement) {
     while (el.firstChild) { el.removeChild(el.firstChild); }
@@ -28,26 +30,6 @@ export function renderChatView(
 
     clearElement(footerContainer);
 
-    function setupNewMessagesListener() {
-        if (newMessagesListener) {
-            newMessagesListener();
-        }
-        const latestMessage = messages[messages.length - 1];
-        if (!latestMessage) return;
-
-        newMessagesListener = listenToNewMessages(chatId, latestMessage.id, async (newMsgs) => {
-            const isAtBottom = listContainer.scrollHeight - listContainer.scrollTop - listContainer.clientHeight < 50;
-            
-            messages = [...messages, ...newMsgs];
-            await addMessagesToView(newMsgs, 'bottom');
-            
-            if (isAtBottom) {
-                listContainer.scrollTop = listContainer.scrollHeight;
-            }
-            updateReadTimestamp(chatId);
-        });
-    }
-
     const inputWrapper = document.createElement('div');
     inputWrapper.className = 'yt-dm-input-wrapper';
 
@@ -57,10 +39,52 @@ export function renderChatView(
     inputElement.placeholder = 'Say something...';
     inputElement.maxLength = 500;
 
+    const shareButton = document.createElement('button');
+    shareButton.className = 'yt-dm-icon-button share-video-button';
+    shareButton.title = 'Share current video';
+    shareButton.appendChild(createShareIcon());
+
     const charCounter = document.createElement('div');
     charCounter.className = 'yt-dm-char-counter';
     inputWrapper.append(inputElement, charCounter);
     footerContainer.appendChild(inputWrapper);
+    footerContainer.appendChild(shareButton);
+
+    const handleShareVideo = async () => {
+        const videoId = parseVideoIdFromUrl(window.location.href);
+        if (!videoId) {
+            alert("No video found on this page to share.");
+            return;
+        }
+
+        const myUid = auth.currentUser?.uid;
+        if (!myUid) return;
+
+        shareButton.disabled = true;
+        try {
+            const videoData = await fetchYouTubeVideoDetails(videoId);
+            
+            const optimisticMessage: Message = {
+                id: `optimistic_${Date.now()}`,
+                from: myUid,
+                video: videoData,
+                timestamp: Timestamp.now()
+            };
+
+            messages = [...messages, optimisticMessage];
+            await addMessagesToView([optimisticMessage], 'bottom');
+            listContainer.scrollTop = listContainer.scrollHeight;
+
+            await addMessage(chatId, { video: videoData });
+
+        } catch (error) {
+            console.error("Failed to share video:", error);
+            alert("Could not share video.");
+        } finally {
+            shareButton.disabled = false;
+        }
+    };
+    shareButton.addEventListener('click', handleShareVideo);
 
     const handleInput = () => {
         const currentLength = inputElement.value.length;
@@ -108,7 +132,7 @@ export function renderChatView(
             console.error("Failed to send message:", error);
         }
     };
-
+    
     const onKeydown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') { handleSend(); }
     };
@@ -214,5 +238,6 @@ export function renderChatView(
         if (newMessagesListener) newMessagesListener();
         inputElement.removeEventListener('input', handleInput);
         inputElement.removeEventListener('keydown', onKeydown);
+        shareButton.removeEventListener('click', handleShareVideo);
     };
 }
