@@ -1,0 +1,397 @@
+#yt-dm-chat-panel {
+    position: fixed;
+    width: 360px;
+    height: 520px;
+    background-color: #212121;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    font-family: "Roboto", "Arial", sans-serif;
+    color: #fff;
+}
+
+.yt-dm-chat-header {
+    padding: 0 8px;
+    min-height: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.yt-dm-username {
+    font-size: 16px;
+    font-weight: 500;
+    margin-left: 16px;
+}
+
+.yt-dm-icon-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    fill: #aaaaaa;
+}
+
+.yt-dm-icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    fill: #ffffff;
+}
+
+.yt-dm-message-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.yt-dm-message-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    max-width: 85%;
+    padding: 4px;
+}
+
+.yt-dm-message-container.incoming {
+    align-self: flex-start;
+}
+
+.yt-dm-message-container.outgoing {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.yt-dm-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.yt-dm-message-bubble {
+    max-width: 90%;
+    padding: 8px 12px;
+    border-radius: 18px;
+    background-color: #373737;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.yt-dm-message-bubble .yt-dm-message-text {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.yt-dm-message-bubble .yt-dm-message-text a {
+    color: #3ea6ff;
+    text-decoration: none;
+}
+
+.yt-dm-message-bubble .yt-dm-message-text a:hover {
+    text-decoration: underline;
+}
+
+.yt-dm-message-bubble.video-embed {
+    background-color: transparent;
+    padding: 0;
+}
+
+.video-thumbnail-container {
+    position: relative;
+    background-color: #000;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.video-thumbnail {
+    width: 100%;
+    display: block;
+    opacity: 0.8;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.video-duration {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.video-title {
+    background-color: #373737;
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 15px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.yt-dm-message-text {
+    margin: 0;
+    font-size: 14px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.yt-dm-seen-status {
+    font-size: 12px;
+    color: #aaaaaa;
+    align-self: flex-end;
+    padding-right: 16px;
+}
+
+.yt-dm-chat-footer {
+    padding: 8px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.yt-dm-input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.yt-dm-message-input {
+    width: 90%;
+    background-color: #212121;
+    border: 1px solid #555;
+    border-radius: 18px;
+    padding: 8px 60px 8px 16px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+}
+
+.yt-dm-message-input::placeholder {
+    color: #aaaaaa;
+}
+
+.yt-dm-message-input:focus {
+    border-color: #3ea6ff;
+}
+
+.yt-dm-char-counter {
+    position: absolute;
+    right: 16px;
+    top: 80%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 500;
+    color: #aaaaaa;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.yt-dm-char-counter.visible {
+    opacity: 1;
+}
+
+.yt-dm-char-counter.limit-exceeded {
+    color: #ff4d4d;
+}
+
+.yt-dm-char-counter.limit-exceeded {
+    color: #ff4d4d;
+    font-weight: 500;
+}
+
+.yt-dm-message-input {
+    width: 100%;
+    background-color: #212121;
+    border: 1px solid #555;
+    border-radius: 18px;
+    padding: 8px 16px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+}
+
+.yt-dm-message-input::placeholder {
+    color: #aaaaaa;
+}
+
+.yt-dm-message-input:focus {
+    border-color: #3ea6ff;
+}
+
+.share-to-dm.yt-third-party-share-target-section-renderer button div.yt-share-target-renderer.icon-resize {
+    --iron-icon-height: 60px;
+    --iron-icon-width: 60px;
+    margin-left: var(--ytd-margin-base);
+    margin-right: var(--ytd-margin-base);
+    margin-bottom: var(--ytd-margin-2x);
+    display: inline-flexbox;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    vertical-align: middle;
+    color: var(--icon-color, currentcolor);
+    fill: var(--iron-icon-fill-color, currentcolor);
+    stroke: var(--iron-icon-stroke-color, none);
+    width: var(--iron-icon-width, 24px);
+    height: var(--iron-icon-height, 24px);
+    animation: var(--iron-icon-animation);
+    margin-top: var(--iron-icon-margin-top);
+    padding: var(--iron-icon-padding);
+}
+
+.share-to-dm.yt-third-party-share-target-section-renderer button #title {
+    color: var(--yt-spec-text-primary);
+    margin: auto;
+    width: 68px;
+    max-height: 42px;
+    text-align: center;
+    white-space: normal;
+    overflow: hidden;
+    font-family: "Roboto", "Arial", sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.8rem;
+    font-weight: 400;
+}
+
+.share-to-dm.yt-third-party-share-target-section-renderer button {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+}
+
+.share-to-dm {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.yt-dm-message-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+.outgoing .yt-dm-message-bubble.video-embed {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.yt-dm-message-timestamp {
+    font-size: 11px;
+    color: #aaaaaa;
+    margin-top: 4px;
+    padding: 0 8px;
+    align-self: flex-start;
+}
+
+.yt-dm-message-container.outgoing .yt-dm-message-timestamp {
+    align-self: flex-end;
+}
+
+.yt-dm-dialog-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.yt-dm-chat-timestamp {
+    font-size: 12px;
+    color: #aaaaaa;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.yt-dm-date-separator {
+    margin: 8px auto;
+    padding: 4px 12px;
+    background-color: #373737;
+    border-radius: 12px;
+    color: #aaaaaa;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.yt-dm-notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--yt-spec-icon-active-other);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.yt-dm-notification-dot.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.yt-dm-copy-link-button {
+    width: 100%;
+    min-height: 40px;
+    padding: 10px;
+    background-color: var(--yt-spec-hover-background, rgba(255, 255, 255, 0.1));
+    color: var(--yt-spec-text-primary, #fff);
+    border: 1px solid var(--yt-spec-badge-chip-background, rgba(255, 255, 255, 0.1));
+    border-radius: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.yt-dm-copy-link-button:hover {
+    background-color: rgba(155, 155, 155, 0.4);
+}
+
+.yt-dm-copy-link-button.copied {
+    background-color: var(--yt-spec-brand-background-solid, rgba(255, 255, 255, 0.5));
+    color: var(--yt-spec-text-primary, #fff);
+}
+
+.yt-dm-dialog-item {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 8px; 
+    border-radius: 8px; 
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.yt-dm-dialog-item:hover, .yt-dm-dialog-item.unread:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.yt-dm-dialog-item.unread {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.yt-dm-dialog-item.unread .name {
+    font-weight: 700;
+}

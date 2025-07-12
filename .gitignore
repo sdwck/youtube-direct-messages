@@ -1,0 +1,10 @@
+/node_modules
+/dist
+/yt-dm-nl
+*.crx
+*.pem
+*.zip
+.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
