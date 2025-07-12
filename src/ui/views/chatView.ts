@@ -44,6 +44,15 @@ export function renderChatView(
     shareButton.title = 'Share current video';
     shareButton.appendChild(createShareIcon());
 
+    const videoId = parseVideoIdFromUrl(window.location.href);
+    if (!videoId) {
+        footerContainer.style.paddingRight = '16px';
+        shareButton.style.display = 'none';
+    } else {
+        footerContainer.style.paddingRight = '8px';
+        shareButton.style.display = 'flex';
+    }
+
     const charCounter = document.createElement('div');
     charCounter.className = 'yt-dm-char-counter';
     inputWrapper.append(inputElement, charCounter);
@@ -51,7 +60,6 @@ export function renderChatView(
     footerContainer.appendChild(shareButton);
 
     const handleShareVideo = async () => {
-        const videoId = parseVideoIdFromUrl(window.location.href);
         if (!videoId) {
             alert("No video found on this page to share.");
             return;
@@ -132,7 +140,7 @@ export function renderChatView(
             console.error("Failed to send message:", error);
         }
     };
-    
+
     const onKeydown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') { handleSend(); }
     };

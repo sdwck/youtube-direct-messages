@@ -380,16 +380,17 @@
 }
 
 .yt-dm-dialog-item {
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-    padding: 8px; 
-    border-radius: 8px; 
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
     cursor: pointer;
     background-color: transparent;
 }
 
-.yt-dm-dialog-item:hover, .yt-dm-dialog-item.unread:hover {
+.yt-dm-dialog-item:hover,
+.yt-dm-dialog-item.unread:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -415,4 +416,179 @@
 .share-video-button:disabled {
     fill: #555555;
     cursor: not-allowed;
+}
+
+.yt-dm-settings-view {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.yt-dm-settings-view h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.settings-list h2 {
+    margin-left: 8px;
+}
+
+.settings-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 8px;
+    background-color: transparent;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.settings-list-item span {
+    font-size: 16px;
+    flex-grow: 1;
+    color: var(--yt-spec-text-primary);
+}
+
+.settings-list-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.settings-list-item img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.remove-ignore-btn {
+    width: 32px !important;
+    height: 32px !important;
+    fill: #ff4d4d;
+}
+
+.remove-ignore-btn:hover {
+    fill: #ff7878;
+}
+
+.add-ignore-form {
+    display: flex;
+    gap: 8px;
+}
+
+.add-ignore-form input {
+    flex-grow: 1;
+}
+
+.yt-dm-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.yt-dm-chat-header .yt-dm-username {
+    flex-grow: 1;
+    padding: 0 8px;
+}
+
+.yt-dm-chat-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.yt-dm-header-controls {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+}
+
+.yt-dm-context-menu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: rgb(18, 18, 18);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    width: max-content;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition: opacity 0.1s ease, transform 0.1s ease;
+}
+
+.yt-dm-context-menu.visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.yt-dm-context-menu div {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.yt-dm-context-menu div:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.yt-dm-share-header {
+    padding: 4px 12px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #aaa;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+}
+
+.yt-dm-dialog-top-row .name {
+    font-family: "Roboto", "Arial", sans-serif;
+    font-size: 1.4rem;
+    line-height: 2rem;
+    font-weight: 400;
+    overflow: hidden;
+    display: block;
+    max-height: 12rem;
+    -webkit-line-clamp: 6;
+    display: box;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.yt-dm-last-message {
+    color: var(--yt-spec-text-secondary);
+    font-family: "Roboto", "Arial", sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.8rem;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.settings-list-item-name {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
 }

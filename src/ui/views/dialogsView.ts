@@ -4,6 +4,7 @@ import { User } from '../../types/user';
 import { Chat } from '../../types/chat';
 import { Unsubscribe } from '../../libs/firebase/firebase-firestore.js';
 import { formatTime } from '../utils/time';
+import { getIgnoreList } from '../../firebase/settings';
 
 let unsubscribeFromChats: Unsubscribe | null = null;
 
@@ -57,21 +58,6 @@ async function renderDialogItem(
     const nameSpan = document.createElement('span');
     nameSpan.className = 'name';
     nameSpan.textContent = partner.displayName || 'User';
-    nameSpan.style.cssText = `
-        font-family: "Roboto", "Arial", sans-serif;
-        font-size: 1.4rem;
-        line-height: 2rem;
-        font-weight: 400;
-        overflow: hidden;
-        display: block;
-        max-height: 12rem;
-        -webkit-line-clamp: 6;
-        display: box;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        text-overflow: ellipsis;
-        white-space: normal;
-    `;
 
     const chatTimestampSpan = document.createElement('span');
     chatTimestampSpan.className = 'yt-dm-chat-timestamp';
@@ -81,16 +67,7 @@ async function renderDialogItem(
     const lastMessageSpan = document.createElement('span');
     let lastMessageText = chat.lastMessage?.text || chat.lastMessage?.video?.title || '...';
     lastMessageSpan.textContent = lastMessageText;
-    lastMessageSpan.style.cssText = `
-        color: var(--yt-spec-text-secondary); 
-        font-family: "Roboto", "Arial", sans-serif; 
-        font-size: 1.2rem; 
-        line-height: 1.8rem; 
-        font-weight: 400;
-        white-space: nowrap; 
-        overflow: hidden; 
-        text-overflow: ellipsis;
-    `;
+    lastMessageSpan.className = 'yt-dm-last-message';
 
     textContainer.append(topRow, lastMessageSpan);
     dialogItem.append(avatar, textContainer);
@@ -126,15 +103,7 @@ export function renderDialogsView(
     if (isSharing) {
         const shareHeader = document.createElement('div');
         shareHeader.textContent = 'Select a conversation to share with';
-        shareHeader.style.cssText = `
-            padding: 4px 12px 12px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #aaa;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 8px;
-        `;
+        shareHeader.className = 'yt-dm-share-header';
         container.appendChild(shareHeader);
     } else {
         const buttonContainer = document.createElement('div');
@@ -148,6 +117,7 @@ export function renderDialogsView(
         copyIcon.style.marginLeft = '8px';
         copyButtonSpan.appendChild(copyIcon);
         copyLinkButton.appendChild(copyButtonSpan);
+        buttonContainer.append(copyLinkButton);
 
         copyLinkButton.className = 'yt-dm-copy-link-button';
 
@@ -176,12 +146,20 @@ export function renderDialogsView(
     renderStateMessage(dialogsList, 'Loading conversations...', 'loading');
 
     unsubscribeFromChats = listenToChats(async (chats) => {
-        if (chats.length === 0) {
+        const ignoredUids = await getIgnoreList();
+
+        const filteredChats = chats.filter(chat => {
+            const partnerUid = chat.participants.find(p => p !== auth.currentUser?.uid);
+            return partnerUid && !ignoredUids.includes(partnerUid);
+        });
+        
+        if (filteredChats.length === 0) {
             renderStateMessage(dialogsList, 'No conversations yet. Click "Copy My Link" to invite someone.', 'empty');
             return;
         }
+        
         clearElement(dialogsList);
-        const dialogItemsPromises = chats.map(chat => renderDialogItem(chat, onSelectDialog, unreadIds.has(chat.id)));
+        const dialogItemsPromises = filteredChats.map(chat => renderDialogItem(chat, onSelectDialog, unreadIds.has(chat.id)));
         const dialogItems = (await Promise.all(dialogItemsPromises)).filter(Boolean) as HTMLElement[];
         dialogsList.append(...dialogItems);
     });
