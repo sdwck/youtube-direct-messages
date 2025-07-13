@@ -28,16 +28,22 @@ jobs:
       - name: Build extension
         run: npm run build
 
+      - name: Prepare packaged directory
+        run: |
+          PACKAGE_DIR=yt-dm-${{ github.ref_name }}
+          mkdir -p "$PACKAGE_DIR"
+          cp -r dist/* "$PACKAGE_DIR"/
+
       - name: Package extension
-        uses: thedoctor0/zip-release@master
-        with:
-          directory: dist/
-          filename: yt-dm-${{ github.ref_name }}.zip
+        run: |
+          zip -r yt-dm-${{ github.ref_name }}.zip \
+            yt-dm-${{ github.ref_name }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: dist/yt-dm-${{ github.ref_name }}.zip
+          files: |
+            yt-dm-${{ github.ref_name }}.zip
           name: Release ${{ github.ref_name }}
           generate_release_notes: true
