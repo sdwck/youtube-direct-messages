@@ -367,6 +367,7 @@ function initialize() {
             sessionStorage.removeItem('yt-dm-pending-share');
             isSharingMode = true;
             pendingVideoData = JSON.parse(pendingShareJSON);
+            console.log('Pending video data:', pendingVideoData);
         } else {
             isSharingMode = false;
             pendingVideoData = null;

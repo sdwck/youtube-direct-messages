@@ -9,7 +9,7 @@ function formatSecondsToTime(secondsValue: number): string {
     return `${minutes}:${paddedSeconds}`;
 }
 
-export async function fetchYouTubeVideoDetails(videoId: string): Promise<VideoDetails> {
+export async function fetchYouTubeVideoDetails(videoId: string, timestamp?: number): Promise<VideoDetails> {
     const type = window.location.pathname.includes('/shorts/') ? 'short' : 'video';
     
     let title = 'YouTube Video';
@@ -60,12 +60,22 @@ export async function fetchYouTubeVideoDetails(videoId: string): Promise<VideoDe
         }
     }
 
+    if (!timestamp)
+        return {
+            type: type,
+            title: title,
+            thumbnail: thumbnail,
+            url: `https://youtu.be/${videoId}`,
+            duration: durationString
+        };
+
     return {
         type: type,
         title: title,
         thumbnail: thumbnail,
         url: `https://youtu.be/${videoId}`,
         duration: durationString,
+        timestamp: timestamp
     };
 }
 

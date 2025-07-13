@@ -44,6 +44,43 @@ export function renderChatView(
     shareButton.title = 'Share current video';
     shareButton.appendChild(createShareIcon());
 
+    const shareMenu = document.createElement('div');
+    shareMenu.className = 'yt-dm-context-menu';
+
+    const shareWithTs = document.createElement('div');
+    shareWithTs.className = 'yt-dm-context-menu-item';
+    shareWithTs.textContent = 'Share with Timestamp';
+    shareWithTs.addEventListener('click', async e => {
+        e.stopPropagation();
+        shareMenu.classList.remove('visible');
+        await handleShareVideo(true);
+    });
+    shareMenu.appendChild(shareWithTs);
+
+    const shareWrapper = document.createElement('div');
+    shareWrapper.className = 'yt-dm-header-controls';
+    shareWrapper.append(shareButton);
+    shareButton.appendChild(shareMenu);
+    footerContainer.appendChild(shareWrapper);
+
+    const shareClickListener = async (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        shareMenu.classList.toggle('visible');
+
+        setTimeout(() => {
+            const closeShareMenu = (evt: MouseEvent) => {
+                if (!shareMenu.contains(evt.target as Node)) {
+                    shareMenu.classList.remove('visible');
+                    document.removeEventListener('click', closeShareMenu);
+                }
+            };
+            document.addEventListener('click', closeShareMenu);
+        }, 0);
+    };
+
+    shareButton.addEventListener('contextmenu', shareClickListener);
+
     const videoId = parseVideoIdFromUrl(window.location.href);
     if (!videoId) {
         footerContainer.style.paddingRight = '16px';
@@ -59,7 +96,7 @@ export function renderChatView(
     footerContainer.appendChild(inputWrapper);
     footerContainer.appendChild(shareButton);
 
-    const handleShareVideo = async () => {
+    const handleShareVideo = async (includeTimestamp?: boolean | Event) => {
         if (!videoId) {
             alert("No video found on this page to share.");
             return;
@@ -70,8 +107,11 @@ export function renderChatView(
 
         shareButton.disabled = true;
         try {
-            const videoData = await fetchYouTubeVideoDetails(videoId);
-            
+            const timestamp = parseInt((document.getElementById("movie_player") as any)?.getCurrentTime().toFixed(0));
+            const videoData = (includeTimestamp === true && timestamp) ?? false ?
+                await fetchYouTubeVideoDetails(videoId, timestamp) :
+                await fetchYouTubeVideoDetails(videoId);
+
             const optimisticMessage: Message = {
                 id: `optimistic_${Date.now()}`,
                 from: myUid,
@@ -127,7 +167,7 @@ export function renderChatView(
             id: `optimistic_${Date.now()}`,
             from: myUid,
             text: textToSend,
-            timestamp: Timestamp.now() 
+            timestamp: Timestamp.now()
         };
 
         messages = [...messages, optimisticMessage];
@@ -173,7 +213,7 @@ export function renderChatView(
 
         allSeparators.forEach(separator => {
             const currentDateString = separator.getAttribute('data-date-string');
-            
+
             if (currentDateString === lastDateString) {
                 separator.remove();
             } else {
@@ -227,7 +267,7 @@ export function renderChatView(
             newMessagesListener = listenToNewMessages(chatId, latestMessage.id, async (newMsgs) => {
                 const myUid = auth.currentUser?.uid;
                 const trulyNewMsgs = newMsgs.filter(newMsg => newMsg.from !== myUid);
-                
+
                 if (trulyNewMsgs.length > 0) {
                     const isAtBottom = listContainer.scrollHeight - listContainer.scrollTop - listContainer.clientHeight < 50;
                     messages = [...messages, ...trulyNewMsgs];
@@ -247,5 +287,7 @@ export function renderChatView(
         inputElement.removeEventListener('input', handleInput);
         inputElement.removeEventListener('keydown', onKeydown);
         shareButton.removeEventListener('click', handleShareVideo);
+        shareButton.removeEventListener('click', shareClickListener);
+        shareButton.removeEventListener('contextmenu', shareClickListener);
     };
 }

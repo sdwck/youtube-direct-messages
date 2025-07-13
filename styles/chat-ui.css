@@ -403,6 +403,7 @@
 }
 
 .share-video-button {
+    position: relative;
     flex-shrink: 0;
     fill: #aaaaaa;
     margin-left: 4px;
@@ -517,6 +518,7 @@
 }
 
 .yt-dm-context-menu {
+    color: var(--yt-spec-text-primary);
     position: absolute;
     top: 40px;
     right: 0;
@@ -591,4 +593,16 @@
     flex-direction: column;
     flex-grow: 1;
     overflow: hidden;
+}
+
+.video-timestamp-badge {
+  display: inline-block;
+  margin-left: 0.5em;
+  padding: 0.1em 0.4em;
+  font-size: 0.75em;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border-radius: 3px;
+  vertical-align: middle;
 }

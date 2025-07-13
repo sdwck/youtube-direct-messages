@@ -88,19 +88,25 @@ function insertDMButton(container: Element | null) {
 
     let videoId = parseVideoIdFromUrl(window.location.href);
 
-        if (!videoId) {
-            const shareUrlInput = document.getElementById('share-url') as HTMLInputElement;
-            if (shareUrlInput && shareUrlInput.value) {
-                videoId = parseYouTubeVideoId(shareUrlInput.value);
-            }
-        }
+    if (!videoId) {
+      const shareUrlInput = document.getElementById('share-url') as HTMLInputElement;
+      if (shareUrlInput && shareUrlInput.value) {
+        videoId = parseYouTubeVideoId(shareUrlInput.value);
+      }
+    }
 
     if (!videoId) {
       alert('Could not find a valid YouTube video ID on this page.');
       return;
     }
 
-    const videoData = await fetchYouTubeVideoDetails(videoId);
+    const isChecked = document.querySelector('tp-yt-paper-ripple#ink')?.hasAttribute('checked');
+    const timestamp = (document.querySelector('tp-yt-iron-input input.tp-yt-paper-input') as HTMLInputElement)?.value;
+    const formattedTimestamp = timestamp.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
+    const videoData = isChecked && formattedTimestamp ?
+      await fetchYouTubeVideoDetails(videoId, formattedTimestamp) :
+      await fetchYouTubeVideoDetails(videoId);
+    console.log('Video data fetched:', videoData);
 
     sessionStorage.setItem('yt-dm-pending-share', JSON.stringify(videoData));
 

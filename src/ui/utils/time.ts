@@ -33,3 +33,9 @@ export function formatDateSeparator(timestamp: Timestamp | undefined): string {
         day: 'numeric'
     });
 }
+
+export function formatSeconds(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}

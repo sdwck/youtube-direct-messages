@@ -4,4 +4,5 @@ interface VideoDetails {
     thumbnail: string;
     url: string;
     duration: string;
+    timestamp?: number;
 }
