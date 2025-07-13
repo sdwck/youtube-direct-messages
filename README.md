@@ -14,13 +14,23 @@ A browser extension that seamlessly integrates a private messaging system direct
 
 ## Installation
 
-1.  Clone this repository or download it as a ZIP file.
-2.  Run `npm install` to install the required development dependencies.
-3.  Run `npm run build` to compile the source code and create the `dist` folder.
-4.  Open Google Chrome and navigate to `chrome://extensions`.
-5.  Enable "Developer mode" using the toggle in the top right corner.
-6.  Click "Load unpacked" and select the `dist` folder from this project.
-7.  The YouTube DM icon will appear in the top right corner of the YouTube header.
+1. Go to the [Releases page](https://github.com/sdwck/yt-dm-nl/releases/latest) and download the ZIP archive of the latest release.  
+2. Unzip the archive.  
+3. Open your browser and navigate to `chrome://extensions`.
+4. Enable **Developer mode** (usually toggle in the top right).
+5. Click **Load unpacked**, then select the `yt-dm-nl` folder you just unzipped.  
+6. The YouTube DM icon will now appear in the top right corner of the YouTube header.
+
+## Build
+
+If you’d like to build the extension yourself:
+
+```bash
+git clone https://github.com/sdwck/yt-dm-nl.git
+cd yt-dm-nl
+npm install
+npm run build
+```
 
 ## Tech Stack
 
