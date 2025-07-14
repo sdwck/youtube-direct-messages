@@ -433,9 +433,9 @@
     align-items: center;
     gap: 12px;
     padding: 8px;
-    border-radius: 8px;
     cursor: pointer;
     background-color: transparent;
+    border-radius: 8px;
 }
 
 .yt-dm-dialog-item:hover,
@@ -445,6 +445,14 @@
 
 .yt-dm-dialog-item.unread {
     background-color: rgba(255, 255, 255, 0.05);
+}
+.yt-dm-dialog-item.unread.first {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.yt-dm-dialog-item.unread.last {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .yt-dm-dialog-item.unread .name {

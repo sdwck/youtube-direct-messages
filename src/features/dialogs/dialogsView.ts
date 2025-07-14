@@ -114,13 +114,19 @@ export class DialogsView {
     
     public renderDialogs(items: DialogItem[]): void {
         clearElement(this.listContainer);
-        items.forEach(item => this.listContainer.appendChild(this.createDialogItemElement(item)));
+        items.forEach((item, index) => {
+            const unreadCount = items.filter(i => i.isUnread).length;
+            const dialogItem = this.createDialogItemElement(item, index === 0, index === unreadCount - 1);
+            this.listContainer.appendChild(dialogItem);
+        });
     }
 
-    private createDialogItemElement(item: DialogItem): HTMLElement {
+    private createDialogItemElement(item: DialogItem, isFirst: boolean, isLast: boolean): HTMLElement {
         const el = document.createElement('div');
         el.className = 'yt-dm-dialog-item';
         el.classList.toggle('unread', item.isUnread);
+        el.classList.toggle('first', isFirst);
+        el.classList.toggle('last', isLast);
         el.onclick = (e) => { e.stopPropagation(); this.props.selectDialog(item.partner, item.id); };
 
         const avatar = document.createElement('img');
