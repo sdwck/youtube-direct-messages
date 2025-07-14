@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc, updateDoc, arrayRemove, arrayUnion } from '../libs/firebase/firebase-firestore.js';
-import { db, auth } from './firebase-config';
+import { db, auth } from './firebaseConfig';
 
 const IGNORE_LIST_DOC = 'ignoreList';
 

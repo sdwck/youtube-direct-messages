@@ -1,9 +1,9 @@
 import {
   collection, query, where, getDocs, addDoc, onSnapshot, orderBy, doc, getDoc,
-  Unsubscribe, QueryDocumentSnapshot, DocumentData, WriteBatch, serverTimestamp,
-  limitToLast, endBefore, startAfter, writeBatch, limit, startAt, collectionData
+  Unsubscribe, QueryDocumentSnapshot, DocumentData, serverTimestamp,
+  limitToLast, startAfter, writeBatch, limit, Timestamp
 } from '../libs/firebase/firebase-firestore.js';
-import { db, auth } from './firebase-config';
+import { db, auth } from './firebaseConfig';
 import { User } from '../types/user';
 import { Message } from '../types/message';
 import { Chat } from '../types/chat';
@@ -80,10 +80,10 @@ export async function addMessage(
 
 export async function fetchInitialMessages(chatId: string): Promise<{ messages: Message[], oldestDoc: QueryDocumentSnapshot | null }> {
     const messagesCol = collection(db, `chats/${chatId}/messages`);
-    const q = query(messagesCol, orderBy('timestamp', 'asc'), limitToLast(MESSAGES_BATCH_SIZE));
+    const q = query(messagesCol, orderBy('timestamp', 'desc'), limit(MESSAGES_BATCH_SIZE));
     const snapshot = await getDocs(q);
-    const messages = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Message));
-    const oldestDoc = snapshot.docs[0] || null;
+    const messages = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Message)).reverse();
+    const oldestDoc = snapshot.docs[snapshot.docs.length - 1] || null;
     return { messages, oldestDoc };
 }
 
@@ -91,9 +91,9 @@ export async function fetchOlderMessages(chatId: string, cursor: QueryDocumentSn
     const messagesCol = collection(db, `chats/${chatId}/messages`);
     const q = query(messagesCol, orderBy('timestamp', 'desc'), startAfter(cursor), limit(MESSAGES_BATCH_SIZE));
     const snapshot = await getDocs(q);
-    const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message));
+    const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message)).reverse();
     const oldestDoc = snapshot.docs[snapshot.docs.length - 1] || null;
-    return { messages: messages.reverse(), oldestDoc };
+    return { messages, oldestDoc };
 }
 
 export function listenToChats(callback: (chats: Chat[]) => void): Unsubscribe {
@@ -115,20 +115,28 @@ export function listenToChats(callback: (chats: Chat[]) => void): Unsubscribe {
   });
 }
 
-export function listenToNewMessages(chatId: string, latestMessageId: string | undefined, callback: (messages: Message[]) => void): Unsubscribe {
-    const me = auth.currentUser;
-    if (!me) return () => {};
+export function listenToNewMessages(
+  chatId: string,
+  latestMessageTimestamp: Timestamp | null,
+  callback: (messages: Message[]) => void
+): Unsubscribe {
+  if (!auth.currentUser) return () => {};
 
-    const messagesCol = collection(db, `chats/${chatId}/messages`);
-    const q = query(messagesCol, orderBy('timestamp', 'asc'));
+  const messagesCol = collection(db, `chats/${chatId}/messages`);
+  const q = latestMessageTimestamp
+    ? query(messagesCol, orderBy('timestamp', 'asc'), startAfter(latestMessageTimestamp))
+    : query(messagesCol, orderBy('timestamp', 'asc'), startAfter(Timestamp.now()));
 
-    return onSnapshot(q, (snapshot) => {
-        const allMessages = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Message));
-        const lastKnownIndex = latestMessageId ? allMessages.findIndex(m => m.id === latestMessageId) : -1;
-        const newMessages = allMessages.slice(lastKnownIndex + 1);
-
-        if (newMessages.length > 0) {
-            callback(newMessages);
-        }
+  return onSnapshot(q, (snapshot) => {
+    const newMessages: Message[] = [];
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "added") {
+        newMessages.push({ ...change.doc.data(), id: change.doc.id } as Message);
+      }
     });
+
+    if (newMessages.length > 0) {
+      callback(newMessages);
+    }
+  });
 }

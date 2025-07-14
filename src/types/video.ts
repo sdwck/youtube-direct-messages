@@ -1,4 +1,4 @@
-interface VideoDetails {
+export interface Video {
     title: string;
     type?: 'video' | 'short';
     thumbnail: string;

@@ -87,15 +87,6 @@ export function createFilledMessageIcon(): SVGElement {
   ]);
 }
 
-export function createHeartIcon(): SVGElement {
-  return createSvgElement([
-    {
-      d: 'M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.05.05-.05-.05C7.32 14.25 4 11.36 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.86-3.32 5.75-7.95 10.05z',
-      fill: 'var(--yt-spec-icon-active-other, #fff)',
-    }
-  ]);
-}
-
 export function createBackArrowIcon(): SVGElement {
   return createSvgElement([
     {

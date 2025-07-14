@@ -1,5 +1,5 @@
-import { auth } from '../../firebase/firebase-config';
-import { getUserProfile } from '../../firebase/firestore';
+import { auth } from '../../firebase/firebaseConfig';
+import { chatService } from '../../services/chatService';
 import { Message } from '../../types/message';
 import { linkify } from '../utils/linkify';
 import { formatSeconds, formatTime } from '../utils/time';
@@ -12,9 +12,9 @@ export async function createMessageElement(message: Message): Promise<HTMLElemen
     container.className = `yt-dm-message-container ${isOutgoing ? 'outgoing' : 'incoming'}`;
 
     if (!isOutgoing) {
-        const senderProfile = await getUserProfile(message.from);
+        const senderProfile = await chatService.getUserProfile(message.from);
         const avatar = document.createElement('img');
-        avatar.className = 'yt-dm-avatar';
+        avatar.className = 'yt-dm-avatar-mini';
         avatar.src = senderProfile.photoURL || 'https://via.placeholder.com/28';
         container.appendChild(avatar);
     }
@@ -27,18 +27,16 @@ export async function createMessageElement(message: Message): Promise<HTMLElemen
 
     if (message.video) {
         bubble.classList.add('video-embed');
-
         const videoLink = document.createElement('a');
         if (message.video.type === 'short') {
             const videoId = message.video.url.split('/').pop();
             videoLink.href = `https://www.youtube.com/shorts/${videoId}`;
         } else if (message.video.timestamp) {
-            const separator = videoLink.href.includes('?') ? '&' : '?';
+            const separator = message.video.url.includes('?') ? '&' : '?';
             videoLink.href = message.video.url + `${separator}t=${message.video.timestamp}`;
         } else {
             videoLink.href = message.video.url;
         }
-        // videoLink.target = '_blank';
         videoLink.rel = 'noopener noreferrer';
         videoLink.style.textDecoration = 'none';
         videoLink.style.color = 'inherit';
@@ -64,17 +62,12 @@ export async function createMessageElement(message: Message): Promise<HTMLElemen
             titleP.appendChild(tsBadge);
         }
 
-
         videoLink.append(thumbnailContainer, titleP);
         bubble.appendChild(videoLink);
-    } else {
+    } else if (message.text) {
         const messageText = document.createElement('p');
         messageText.className = 'yt-dm-message-text';
-        if (message.text) {
-            const contentFragment = linkify(message.text);
-            messageText.appendChild(contentFragment);
-        }
-
+        messageText.appendChild(linkify(message.text));
         bubble.appendChild(messageText);
     }
 
@@ -83,7 +76,6 @@ export async function createMessageElement(message: Message): Promise<HTMLElemen
     timestampSpan.textContent = formatTime(message.timestamp);
 
     messageContentWrapper.append(bubble, timestampSpan);
-
     container.appendChild(messageContentWrapper);
 
     return container;

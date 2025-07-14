@@ -1,3 +1,5 @@
+import { Video } from "../../types/video";
+
 function formatSecondsToTime(secondsValue: number): string {
     if (isNaN(secondsValue) || secondsValue < 0) {
         return '';
@@ -9,9 +11,9 @@ function formatSecondsToTime(secondsValue: number): string {
     return `${minutes}:${paddedSeconds}`;
 }
 
-export async function fetchYouTubeVideoDetails(videoId: string, timestamp?: number): Promise<VideoDetails> {
+export async function fetchYouTubeVideoDetails(videoId: string, timestamp?: number): Promise<Video> {
     const type = window.location.pathname.includes('/shorts/') ? 'short' : 'video';
-    
+
     let title = 'YouTube Video';
     let durationString = '';
     let thumbnail = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
@@ -19,17 +21,19 @@ export async function fetchYouTubeVideoDetails(videoId: string, timestamp?: numb
         const playerResponse = (window as any).ytInitialPlayerResponse;
         if (playerResponse && playerResponse.videoDetails) {
             const videoDetails = playerResponse.videoDetails;
-            if (videoDetails.title) {
-                title = videoDetails.title;
-            }
-            if (videoDetails.lengthSeconds) {
-                durationString = formatSecondsToTime(parseInt(videoDetails.lengthSeconds, 10));
-            }
-            if (videoDetails.thumbnail?.thumbnails?.length > 0) {
-                thumbnail = videoDetails.thumbnail.thumbnails.pop().url;
+            if (videoDetails.videoId === videoId) {
+                if (videoDetails.title) {
+                    title = videoDetails.title;
+                }
+                if (videoDetails.lengthSeconds) {
+                    durationString = formatSecondsToTime(parseInt(videoDetails.lengthSeconds, 10));
+                }
+                if (videoDetails.thumbnail?.thumbnails?.length > 0) {
+                    thumbnail = videoDetails.thumbnail.thumbnails.pop().url;
+                }
             }
         }
-    } catch {}
+    } catch { }
 
     try {
         const response = await fetch(`https://www.youtube.com/oembed?url=https://youtu.be/${videoId}&format=json`);
@@ -38,8 +42,8 @@ export async function fetchYouTubeVideoDetails(videoId: string, timestamp?: numb
             if (data.title) title = data.title;
             if (data.thumbnail_url) thumbnail = data.thumbnail_url;
         }
-    } catch {}
-    
+    } catch { }
+
     if (!title || title === 'YouTube Video') {
         const titleEl = document.querySelector('h1.ytd-watch-metadata');
         if (titleEl) {
@@ -67,7 +71,7 @@ export async function fetchYouTubeVideoDetails(videoId: string, timestamp?: numb
             thumbnail: thumbnail,
             url: `https://youtu.be/${videoId}`,
             duration: durationString
-        };
+        }
 
     return {
         type: type,

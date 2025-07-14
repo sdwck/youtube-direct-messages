@@ -1,6 +1,6 @@
 {
   "name": "YouTube Direct Messages",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "manifest_version": 3,
   "description": "A Chrome extension to send direct messages on YouTube.",
   "permissions": [
@@ -11,26 +11,20 @@
   ],
   "content_scripts": [
     {
-      "matches": [
-        "https://www.youtube.com/*"
-      ],
-      "js": [
-        "inject.js"
-      ],
-      "css": [
-        "styles/chat-ui.css"
-      ],
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["inject.js"],
+      "css": ["styles/panel.css"],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
-        "styles/chat-ui.css",
+        "styles/panel.css",
         "libs/firebase/firebase-app.js",
         "libs/firebase/firebase-auth.js",
         "libs/firebase/firebase-firestore.js",
-        "app.js"
+        "main.js"
       ],
       "matches": [
         "https://www.youtube.com/*"

@@ -16,7 +16,7 @@ const scriptsToInject = [
     'libs/firebase/firebase-app.js',
     'libs/firebase/firebase-auth.js',
     'libs/firebase/firebase-firestore.js',
-    'app.js'
+    'main.js'
 ];
 
 scriptsToInject.forEach(file => {

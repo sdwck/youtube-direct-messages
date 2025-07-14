@@ -13,8 +13,11 @@ export function getReadTimestamps(): ReadTimestamps {
 }
 
 export function updateReadTimestamp(chatId: string): void {
-    const timestamps = getReadTimestamps();
-    timestamps[chatId] = Date.now() + 3000;
-    
-    localStorage.setItem(READ_TIMESTAMPS_KEY, JSON.stringify(timestamps));
+    try {
+        const timestamps = getReadTimestamps();
+        timestamps[chatId] = Date.now() + 1000;
+        localStorage.setItem(READ_TIMESTAMPS_KEY, JSON.stringify(timestamps));
+    } catch (error) {
+        console.error("Error updating read timestamp in localStorage:", error);
+    }
 }

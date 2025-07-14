@@ -23,6 +23,7 @@ export interface QueryDocumentSnapshot<T = DocumentData> extends DocumentSnapsho
 export interface QuerySnapshot<T = DocumentData> {
   readonly docs: QueryDocumentSnapshot<T>[];
   forEach(callback: (result: QueryDocumentSnapshot<T>) => void): void;
+  docChanges(): Array<{ doc: QueryDocumentSnapshot<T>; type: 'added' | 'modified' | 'removed'; oldIndex: number; newIndex: number }>;
 }
 
 export interface WriteBatch {
@@ -50,6 +51,7 @@ export function writeBatch(firestore: any): WriteBatch;
 export function serverTimestamp(): any;
 export function limit(limit: number): any;
 export function startAfter(snapshot: QueryDocumentSnapshot): any;
+export function startAfter(...fieldValues: any[]): any;
 export function endBefore(snapshot: QueryDocumentSnapshot): any;
 export function startAt(snapshot: QueryDocumentSnapshot): any;
 export function limitToLast(limit: number): any;

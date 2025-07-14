@@ -7,8 +7,9 @@ import {
   onAuthStateChanged as firebaseOnAuthStateChanged,
   User as FirebaseUser,
 } from '../libs/firebase/firebase-auth.js';
-import { emit, DMEvents } from '../events';
+import { emit, DMEvents } from '../shared/events';
 import { User } from '../types/user';
+
 const firebaseConfig = {
     apiKey: "AIzaSyDdrsNQG_DuYEHnJYioECyxZNi96VnDBII",
     authDomain: "yt-dm-nl.firebaseapp.com",

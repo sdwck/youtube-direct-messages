@@ -1,10 +1,12 @@
-import { User } from './types/user';
+import { User } from '../types/user';
+import { Video } from '../types/video';
 
 export enum DMEvents {
   AuthChanged = 'auth_changed',
   UIReady = 'ui_ready',
   FirebaseReady = 'firebase_ready',
-  InitUI = 'init_ui'
+  InitUI = 'init_ui',
+  SHARE_INITIATED = 'share_initiated'
 }
 
 export type DMEventMap = {
@@ -12,6 +14,7 @@ export type DMEventMap = {
   [DMEvents.UIReady]: void;
   [DMEvents.FirebaseReady]: unknown;
   [DMEvents.InitUI]: void;
+  [DMEvents.SHARE_INITIATED]: { videoData: Video };
 };
 
 type Callback<T> = (payload: T) => void;

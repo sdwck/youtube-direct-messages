@@ -1,13 +1,13 @@
 {
   "name": "yt-dm-nl-extension",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "webpack"
   },
   "keywords": [],
-  "author": "",
+  "author": "sdwck",
   "license": "ISC",
   "devDependencies": {
     "@types/chrome": "^0.0.328",

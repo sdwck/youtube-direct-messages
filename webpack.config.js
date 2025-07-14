@@ -5,7 +5,7 @@ module.exports = {
   mode: 'production',
   entry: {
     inject: './src/inject.ts',
-    app: './src/app.ts',
+    main: './src/core/main.ts',
   },
   experiments: {
     outputModule: true,
@@ -33,7 +33,7 @@ module.exports = {
       patterns: [
         { from: 'manifest.json', to: '.' },
         { from: 'icons', to: 'icons' },
-        { from: 'styles', to: 'styles' },
+        { from: 'src/styles', to: 'styles' },
         { from: 'src/libs', to: 'libs' }
       ],
     }),

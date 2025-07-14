@@ -1,4 +1,4 @@
-import { emit, DMEvents } from '../../events';
+import { emit, DMEvents } from '../events';
 import { createStrokedMessageIcon } from './icons';
 
 export function createToggleButton(onClick: (buttonElement: HTMLButtonElement) => void): HTMLButtonElement {

@@ -13,6 +13,12 @@
     color: #fff;
 }
 
+.yt-dm-view-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 .yt-dm-chat-header {
     padding: 0 8px;
     min-height: 48px;
@@ -26,7 +32,7 @@
 .yt-dm-username {
     font-size: 16px;
     font-weight: 500;
-    margin-left: 16px;
+    margin-left: 8px;
 }
 
 .yt-dm-icon-button {
@@ -73,10 +79,29 @@
 }
 
 .yt-dm-avatar {
-    width: 28px;
-    height: 28px;
     border-radius: 50%;
     flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.yt-dm-avatar-mini {
+    border-radius: 50%;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+}
+
+.yt-dm-chat-header-container {
+    display: flex;
+    align-items: center;
+}
+
+.yt-dm-avatar-medium {
+    border-radius: 50%;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
 }
 
 .yt-dm-message-bubble {
@@ -261,6 +286,11 @@
     padding: var(--iron-icon-padding);
 }
 
+.share-to-dm.yt-share-target-renderer:focus {
+    outline: 1px solid var(--yt-spec-button-chip-background-hover);
+    background-color: var(--yt-spec-button-chip-background-hover);
+}
+
 .share-to-dm.yt-third-party-share-target-section-renderer button #title {
     color: var(--yt-spec-text-primary);
     margin: auto;
@@ -280,6 +310,15 @@
     flex-wrap: wrap;
     flex-direction: column;
     align-items: center;
+    margin: 1px 0;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 1px 2px;
+    outline: none;
+    text-align: inherit;
+    font-family: inherit;
+    background-color: transparent;
+    cursor: pointer;
 }
 
 .share-to-dm {
@@ -298,6 +337,28 @@
     flex-direction: row-reverse;
 }
 
+.yt-dm-dialogs-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    padding: 8px;
+}
+
+.yt-dm-copy-link-container {
+    display: flex;
+    padding: 8px;
+}
+
+.yt-dm-dialogs-list {
+    overflow: hidden;
+}
+
+.yt-dm-copy-link-text {
+    display: flex;
+    align-items: center;
+}
+
 .yt-dm-message-timestamp {
     font-size: 11px;
     color: #aaaaaa;
@@ -308,6 +369,13 @@
 
 .yt-dm-message-container.outgoing .yt-dm-message-timestamp {
     align-self: flex-end;
+}
+
+.yt-dm-dialog-text-container {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-grow: 1;
 }
 
 .yt-dm-dialog-top-row {
@@ -419,14 +487,14 @@
     cursor: not-allowed;
 }
 
-.yt-dm-settings-view {
+.yt-dm-settings-body {
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.yt-dm-settings-view h2 {
+.yt-dm-settings-body h2 {
     margin: 0;
     font-size: 24px;
     font-weight: 500;
@@ -502,6 +570,14 @@
 .yt-dm-chat-header .yt-dm-username {
     flex-grow: 1;
     padding: 0 8px;
+    margin-left: 0;
+}
+
+.yt-dm-state-message {
+    text-align: center;
+    padding: 8px;
+    color: var(--yt-spec-text-secondary);
+    font-size: 14px;
 }
 
 .yt-dm-chat-header-left {
@@ -561,6 +637,10 @@
     margin-bottom: 8px;
 }
 
+.yt-dm-context-menu-item {
+    text-align: right;
+}
+
 .yt-dm-dialog-top-row .name {
     font-family: "Roboto", "Arial", sans-serif;
     font-size: 1.4rem;
@@ -570,6 +650,7 @@
     display: block;
     max-height: 12rem;
     -webkit-line-clamp: 6;
+    line-clamp: 6;
     display: box;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -596,13 +677,38 @@
 }
 
 .video-timestamp-badge {
-  display: inline-block;
-  margin-left: 0.5em;
-  padding: 0.1em 0.4em;
-  font-size: 0.75em;
-  font-weight: 500;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  border-radius: 3px;
-  vertical-align: middle;
+    display: inline-block;
+    margin-left: 0.5em;
+    padding: 0.1em 0.4em;
+    font-size: 0.75em;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
+.yt-dm-login-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+}
+
+.yt-dm-login-view p {
+    font-size: 16px;
+    color: #fff;
+    margin: 0;
+}
+
+#yt-dm-login-btn {
+    background-color: rgb(62, 166, 255);
+    color: rgb(15, 15, 15);
+    font-weight: 500;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 18px;
+    cursor: pointer;
 }
