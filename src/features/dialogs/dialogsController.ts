@@ -15,7 +15,7 @@ export class DialogsController {
         const props: DialogsViewProps = {
             isSharing: !!stateService.shareContext,
             selectDialog: this.selectDialog.bind(this),
-            openSettings: () => stateService.setView(ViewType.SETTINGS),
+            openSettings: () => stateService.setView(ViewType.SETTINGS_MAIN),
             copyMyLink: this.copyMyLink.bind(this),
         };
         this.view = new DialogsView(this.container, props);
@@ -27,7 +27,7 @@ export class DialogsController {
         this.chatListenerUnsubscribe = chatService.listenToChats(async (chats) => {
             if (!authService.currentUser) return;
             
-            const ignoredUids = await settingsService.getIgnoreList();
+            const ignoredUids = await settingsService.getIgnoredUids();
             const unreadIds = notificationService.getUnreadIds();
 
             const filteredChats = chats.filter(chat => {

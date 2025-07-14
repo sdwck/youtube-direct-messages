@@ -15,7 +15,7 @@ export class PanelController {
     private panel: HTMLElement;
     private viewContainer: HTMLElement;
     private toggleButton: HTMLButtonElement;
-    
+
     private activeViewController: DialogsController | ChatController | SettingsController | null = null;
 
     constructor() {
@@ -23,9 +23,9 @@ export class PanelController {
         this.panel = shell;
         this.viewContainer = viewContainer;
         this.toggleButton = createToggleButton(() => this.togglePanel());
-        
+
         document.body.appendChild(this.panel);
-        
+
         this.initializeServices();
         this.subscribeToStateChanges();
     }
@@ -40,7 +40,7 @@ export class PanelController {
             }
         });
     }
-    
+
     private subscribeToStateChanges(): void {
         stateService.onViewChange(this.renderView.bind(this));
     }
@@ -49,7 +49,7 @@ export class PanelController {
         const currentOpenState = stateService.isPanelOpen();
         const newOpenState = forceOpen || !currentOpenState;
         stateService.setPanelOpen(newOpenState);
-        
+
         this.updateToggleButtonIcon();
 
         if (newOpenState) {
@@ -74,7 +74,7 @@ export class PanelController {
         this.activeViewController = null;
         document.removeEventListener('click', this.handleClickOutside);
     }
-    
+
     private renderView(view: ViewType): void {
         if (!stateService.isPanelOpen() && view !== ViewType.LOGIN) return;
 
@@ -92,7 +92,9 @@ export class PanelController {
             case ViewType.CHAT:
                 this.activeViewController = new ChatController(this.viewContainer);
                 break;
-            case ViewType.SETTINGS:
+            case ViewType.SETTINGS_MAIN:
+            case ViewType.SETTINGS_IGNORE_LIST:
+            case ViewType.SETTINGS_APPEARANCE:
                 this.activeViewController = new SettingsController(this.viewContainer);
                 break;
         }

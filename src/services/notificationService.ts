@@ -5,6 +5,7 @@ import { settingsService } from './settingsService';
 import { authService } from './authService';
 import { stateService, ViewType } from './stateService';
 import { Chat } from '../types/chat';
+import { NotificationStyle } from '../types/settings';
 
 class NotificationService {
     private listenerUnsubscribe: Unsubscribe | null = null;
@@ -48,7 +49,7 @@ class NotificationService {
     private async processChats(chats: Chat[]): Promise<void> {
         if (!authService.currentUser) return;
 
-        const ignoredUids = await settingsService.getIgnoreList();
+        const ignoredUids = await settingsService.getIgnoredUids();
         const readTimestamps = getReadTimestamps();
 
         const filteredChats = chats.filter(chat => {
@@ -81,10 +82,27 @@ class NotificationService {
         }
     }
 
-    private updateDotVisibility(): void {
-        const dot = this.toggleButton?.querySelector('.yt-dm-notification-dot');
-        if (dot) {
-            dot.classList.toggle('visible', this.unreadChatIds.size > 0);
+     public updateDotVisibility(): void {
+        const dotElement = this.toggleButton?.querySelector('.yt-dm-notification-dot') || this.toggleButton?.querySelector('.yt-dm-notification-dot-countable');
+        if (!dotElement) return;
+
+        const { notificationStyle } = settingsService.getAppSettings();
+        const unreadCount = this.unreadChatIds.size;
+
+        dotElement.classList.toggle('visible', unreadCount > 0);
+
+        if (notificationStyle === NotificationStyle.COUNT) {
+            dotElement.classList.add('yt-dm-notification-dot-countable');
+            dotElement.classList.remove('yt-dm-notification-dot');
+        } else if (notificationStyle === NotificationStyle.MINIMAL) {
+            dotElement.classList.add('yt-dm-notification-dot');
+            dotElement.classList.remove('yt-dm-notification-dot-countable');
+        }
+
+        if (notificationStyle === NotificationStyle.COUNT && unreadCount > 0) {
+            dotElement.textContent = unreadCount > 9 ? '9' : String(unreadCount);
+        } else {
+            dotElement.textContent = '';
         }
     }
 

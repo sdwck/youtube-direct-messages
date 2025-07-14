@@ -5,7 +5,9 @@ export enum ViewType {
     LOGIN,
     DIALOGS,
     CHAT,
-    SETTINGS
+    SETTINGS_MAIN,
+    SETTINGS_IGNORE_LIST,
+    SETTINGS_APPEARANCE
 }
 
 export interface IActiveChatContext {

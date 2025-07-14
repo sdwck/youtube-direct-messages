@@ -403,25 +403,6 @@
     text-transform: uppercase;
 }
 
-.yt-dm-notification-dot {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: var(--yt-spec-icon-active-other);
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transform: scale(0.5);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.yt-dm-notification-dot.visible {
-    opacity: 1;
-    transform: scale(1);
-}
-
 .yt-dm-copy-link-button {
     width: 100%;
     min-height: 40px;
@@ -711,4 +692,205 @@
     padding: 10px 16px;
     border-radius: 18px;
     cursor: pointer;
+}
+
+.yt-dm-settings-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.yt-dm-settings-menu {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+}
+
+.yt-dm-settings-menu__item {
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+}
+
+.yt-dm-settings-menu__item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.yt-dm-settings-menu__item::after {
+    content: '›';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: #aaaaaa;
+}
+
+.yt-dm-settings-section {
+    margin-bottom: 24px;
+}
+
+.yt-dm-settings-section h2,
+.yt-dm-settings-section h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 500;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yt-dm-settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.yt-dm-settings-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+
+.yt-dm-settings-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.yt-dm-settings-item__name {
+    font-size: 16px;
+    flex-grow: 1;
+}
+
+.yt-dm-icon-button.remove-btn {
+    fill: #ff4d4d;
+}
+
+.yt-dm-icon-button.remove-btn:hover {
+    fill: #ff7878;
+}
+
+.yt-dm-notification-dot {
+    position: absolute;
+    box-sizing: border-box;
+    top: 8px;
+    right: 8px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    width: 8px;
+    height: 8px;
+    background-color: var(--yt-spec-icon-active-other, #fff);
+    border-radius: 50%;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.yt-dm-notification-dot.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.yt-dm-notification-dot-countable {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  box-sizing: content-box;
+  height: 13px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: #f00;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.yt-dm-notification-dot-countable.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.yt-dm-settings-section {
+  margin-bottom: 24px;
+}
+
+.yt-dm-settings-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #f1f1f1;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yt-dm-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 8px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.yt-dm-radio-label:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.yt-dm-radio-input {
+  display: none;
+}
+
+.yt-dm-radio-custom {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #909090;
+  border-radius: 50%;
+}
+
+.yt-dm-radio-custom::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #3ea6ff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center center;
+  transition: transform 0.2s ease;
+}
+
+.yt-dm-radio-input:checked + .yt-dm-radio-custom {
+  border-color: #3ea6ff;
+}
+
+.yt-dm-radio-input:checked + .yt-dm-radio-custom::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.yt-dm-radio-text {
+    font-size: 16px;
+    color: #f1f1f1;
+    line-height: 1.2;
 }

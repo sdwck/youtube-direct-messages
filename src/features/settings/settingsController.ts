@@ -1,35 +1,56 @@
-import { settingsService } from '../../services/settingsService';
-import { chatService } from '../../services/chatService';
 import { stateService, ViewType } from '../../services/stateService';
-import { SettingsView, SettingsViewProps } from './settingsView';
+import { settingsService } from '../../services/settingsService';
+import { SettingsView } from './settingsView';
+import { IgnoreListView } from './ignoreListView';
+import { AppearanceView } from './appearanceView';
 
 export class SettingsController {
-    private view: SettingsView;
+    private view: SettingsView | IgnoreListView | AppearanceView;
+    private currentSettingsView: ViewType;
 
     constructor(private container: HTMLElement) {
-        const props: SettingsViewProps = {
-            back: () => stateService.setView(ViewType.DIALOGS),
-            removeUser: this.removeUser.bind(this)
-        };
-        this.view = new SettingsView(this.container, props);
-        this.loadIgnoredUsers();
-    }
+        this.currentSettingsView = stateService.getView();
+        
+        switch (this.currentSettingsView) {
+            case ViewType.SETTINGS_IGNORE_LIST:
+                this.view = new IgnoreListView(container, {
+                    back: () => stateService.setView(ViewType.SETTINGS_MAIN),
+                    removeUser: this.removeIgnoredUser.bind(this),
+                });
+                this.loadIgnoredUsers();
+                break;
 
-    private async loadIgnoredUsers(): Promise<void> {
-        this.view.renderLoading();
-        const uids = await settingsService.getIgnoreList();
-        if (uids.length === 0) {
-            this.view.renderEmpty();
-            return;
+            case ViewType.SETTINGS_APPEARANCE:
+                this.view = new AppearanceView(container, {
+                    back: () => stateService.setView(ViewType.SETTINGS_MAIN),
+                    getSettings: settingsService.getAppSettings,
+                    saveSettings: settingsService.saveAppSettings,
+                });
+                break;
+
+            default:
+                this.view = new SettingsView(container, {
+                    back: () => stateService.setView(ViewType.DIALOGS),
+                    openIgnoreList: () => stateService.setView(ViewType.SETTINGS_IGNORE_LIST),
+                    openAppearance: () => stateService.setView(ViewType.SETTINGS_APPEARANCE),
+                });
         }
-
-        const userPromises = uids.map(uid => chatService.getUserProfile(uid));
-        const users = await Promise.all(userPromises);
-        this.view.renderList(users);
     }
 
-    private async removeUser(uid: string): Promise<void> {
-        await settingsService.removeFromIgnoreList(uid);
+    private async loadIgnoredUsers() {
+        if (this.view instanceof IgnoreListView) {
+            this.view.renderLoading();
+            const users = await settingsService.getIgnoredUsers();
+            if (users.length > 0) {
+                this.view.renderList(users);
+            } else {
+                this.view.renderEmpty();
+            }
+        }
+    }
+    
+    private removeIgnoredUser(uid: string) {
+        settingsService.removeFromIgnoreList(uid);
         this.loadIgnoredUsers();
     }
 
