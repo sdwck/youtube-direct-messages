@@ -1,6 +1,6 @@
 {
   "name": "YouTube Direct Messages",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "manifest_version": 3,
   "description": "A Chrome extension to send direct messages on YouTube.",
   "permissions": [

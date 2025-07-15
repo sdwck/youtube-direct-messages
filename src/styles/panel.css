@@ -2,7 +2,7 @@
     position: fixed;
     width: 360px;
     height: 520px;
-    background-color: #212121;
+    background-color: var(--yt-spec-menu-background);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -10,7 +10,8 @@
     display: flex;
     flex-direction: column;
     font-family: "Roboto", "Arial", sans-serif;
-    color: #fff;
+    color: var(--yt-spec-text-primary);
+    ;
 }
 
 .yt-dm-view-container {
@@ -29,6 +30,10 @@
     flex-shrink: 0;
 }
 
+.light-theme .yt-dm-chat-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 .yt-dm-username {
     font-size: 16px;
     font-weight: 500;
@@ -45,12 +50,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    fill: #aaaaaa;
+    background-color: transparent;
 }
 
-.yt-dm-icon-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    fill: #ffffff;
+#yt-dm-toggle {
+    position: relative;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    fill: var(--yt-spec-icon-active-other, #fff);
+}
+
+.yt-dm-icon-button:hover,
+#yt-dm-toggle:hover {
+    background-color: var(--yt-spec-button-chip-background-hover, rgba(255, 255, 255, 0.1));
 }
 
 .yt-dm-message-list {
@@ -113,6 +133,11 @@
     word-wrap: break-word;
 }
 
+.light-theme .yt-dm-message-bubble {
+    background-color: #f9f9f9;
+    color: #000;
+}
+
 .yt-dm-message-bubble .yt-dm-message-text {
     margin: 0;
     white-space: pre-wrap;
@@ -137,6 +162,10 @@
     background-color: #000;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
+}
+
+.light-theme .video-thumbnail-container {
+    background-color: #f9f9f9;
 }
 
 .video-thumbnail {
@@ -168,18 +197,16 @@
     border-bottom-right-radius: 12px;
 }
 
+.light-theme .video-title {
+    background-color: #f9f9f9;
+    color: #000;
+}
+
 .yt-dm-message-text {
     margin: 0;
     font-size: 14px;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
-}
-
-.yt-dm-seen-status {
-    font-size: 12px;
-    color: #aaaaaa;
-    align-self: flex-end;
-    padding-right: 16px;
 }
 
 .yt-dm-chat-footer {
@@ -191,6 +218,10 @@
     gap: 0;
 }
 
+.light-theme .yt-dm-chat-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 .yt-dm-input-wrapper {
     position: relative;
     width: 100%;
@@ -198,25 +229,6 @@
     align-items: center;
     flex-grow: 1;
     gap: 0;
-}
-
-.yt-dm-message-input {
-    width: 90%;
-    background-color: #212121;
-    border: 1px solid #555;
-    border-radius: 18px;
-    padding: 8px 60px 8px 16px;
-    color: #fff;
-    font-size: 14px;
-    outline: none;
-}
-
-.yt-dm-message-input::placeholder {
-    color: #aaaaaa;
-}
-
-.yt-dm-message-input:focus {
-    border-color: #3ea6ff;
 }
 
 .yt-dm-char-counter {
@@ -230,6 +242,10 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.light-theme .yt-dm-char-counter {
+    color: #555;
 }
 
 .yt-dm-char-counter.visible {
@@ -256,8 +272,18 @@
     outline: none;
 }
 
+.light-theme .yt-dm-message-input {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    color: #000;
+}
+
 .yt-dm-message-input::placeholder {
     color: #aaaaaa;
+}
+
+.light-theme .yt-dm-message-input::placeholder {
+    color: #888;
 }
 
 .yt-dm-message-input:focus {
@@ -367,6 +393,10 @@
     align-self: flex-start;
 }
 
+.light-theme .yt-dm-message-timestamp {
+    color: #555;
+}
+
 .yt-dm-message-container.outgoing .yt-dm-message-timestamp {
     align-self: flex-end;
 }
@@ -391,6 +421,10 @@
     margin-left: 8px;
 }
 
+.light-theme .yt-dm-chat-timestamp {
+    color: #555;
+}
+
 .yt-dm-date-separator {
     margin: 8px auto;
     padding: 4px 12px;
@@ -401,6 +435,11 @@
     font-weight: 500;
     text-align: center;
     text-transform: uppercase;
+}
+
+.light-theme .yt-dm-date-separator {
+    background-color: #f9f9f9;
+    color: #555;
 }
 
 .yt-dm-copy-link-button {
@@ -443,13 +482,24 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+.light-theme .yt-dm-dialog-item:hover,
+.light-theme .yt-dm-dialog-item.unread:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 .yt-dm-dialog-item.unread {
     background-color: rgba(255, 255, 255, 0.05);
 }
+
+.light-theme .yt-dm-dialog-item.unread {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 .yt-dm-dialog-item.unread.first {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
+
 .yt-dm-dialog-item.unread.last {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -466,13 +516,23 @@
     margin-left: 4px;
 }
 
+.light-theme .share-video-button {
+    fill: #555555;
+}
+
 .share-video-button:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    fill: #ffffff;
+}
+
+.light-theme .share-video-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .share-video-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .share-video-button:disabled {
-    fill: #555555;
     cursor: not-allowed;
 }
 
@@ -522,6 +582,10 @@
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+.light-theme .settings-list-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 .settings-list-item img {
     width: 32px;
     height: 32px;
@@ -529,13 +593,8 @@
 }
 
 .remove-ignore-btn {
-    width: 32px !important;
-    height: 32px !important;
-    fill: #ff4d4d;
-}
-
-.remove-ignore-btn:hover {
-    fill: #ff7878;
+    width: 32px;
+    height: 32px;
 }
 
 .add-ignore-form {
@@ -545,15 +604,6 @@
 
 .add-ignore-form input {
     flex-grow: 1;
-}
-
-.yt-dm-chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    flex-shrink: 0;
 }
 
 .yt-dm-chat-header .yt-dm-username {
@@ -599,6 +649,12 @@
     transition: opacity 0.1s ease, transform 0.1s ease;
 }
 
+.light-theme .yt-dm-context-menu {
+    background-color: #f9f9f9;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .yt-dm-context-menu.visible {
     opacity: 1;
     transform: scale(1);
@@ -616,6 +672,10 @@
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+.light-theme .yt-dm-context-menu div:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 .yt-dm-share-header {
     padding: 4px 12px 12px;
     font-size: 14px;
@@ -624,6 +684,11 @@
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     margin-bottom: 8px;
+}
+
+.light-theme .yt-dm-share-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    color: #555;
 }
 
 .yt-dm-context-menu-item {
@@ -692,6 +757,10 @@
     margin: 0;
 }
 
+.light-theme .yt-dm-login-view p {
+    color: #000;
+}
+
 #yt-dm-login-btn {
     background-color: rgb(62, 166, 255);
     color: rgb(15, 15, 15);
@@ -700,6 +769,11 @@
     padding: 10px 16px;
     border-radius: 18px;
     cursor: pointer;
+}
+
+.light-theme #yt-dm-login-btn {
+    background-color: rgb(42, 96, 205);
+    color: rgb(255, 255, 255);
 }
 
 .yt-dm-settings-body {
@@ -728,6 +802,10 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+.light-theme .yt-dm-settings-menu__item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 .yt-dm-settings-menu__item::after {
     content: '›';
     position: absolute;
@@ -736,6 +814,10 @@
     transform: translateY(-50%);
     font-size: 24px;
     color: #aaaaaa;
+}
+
+.light-theme .yt-dm-settings-menu__item::after {
+    color: #555;
 }
 
 .yt-dm-settings-section {
@@ -749,6 +831,11 @@
     font-weight: 500;
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .yt-dm-settings-section h2,
+.light-theme .yt-dm-settings-section h3 {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .yt-dm-settings-list {
@@ -769,17 +856,8 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.yt-dm-settings-item__name {
-    font-size: 16px;
-    flex-grow: 1;
-}
-
-.yt-dm-icon-button.remove-btn {
-    fill: #ff4d4d;
-}
-
-.yt-dm-icon-button.remove-btn:hover {
-    fill: #ff7878;
+.light-theme .yt-dm-settings-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .yt-dm-notification-dot {
@@ -807,98 +885,115 @@
 }
 
 .yt-dm-notification-dot-countable {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  box-sizing: content-box;
-  height: 13px;
-  padding: 0 4px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background-color: #f00;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  font-family: "Roboto", "Arial", sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 16px;
-  color: #fff;
-  opacity: 0;
-  transform: scale(0.5);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  pointer-events: none;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    box-sizing: content-box;
+    height: 13px;
+    padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #f00;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    font-family: "Roboto", "Arial", sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
 }
 
 .yt-dm-notification-dot-countable.visible {
-  opacity: 1;
-  transform: scale(1);
+    opacity: 1;
+    transform: scale(1);
 }
 
 .yt-dm-settings-section {
-  margin-bottom: 24px;
+    margin-bottom: 24px;
 }
 
 .yt-dm-settings-section h3 {
-  margin: 0 0 16px 0;
-  font-size: 18px;
-  font-weight: 500;
-  color: #f1f1f1;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: #f1f1f1;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .yt-dm-settings-section h3 {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #000;
 }
 
 .yt-dm-radio-label {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 8px;
-  cursor: pointer;
-  border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 8px;
+    cursor: pointer;
+    border-radius: 8px;
 }
 
 .yt-dm-radio-label:hover {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+.light-theme .yt-dm-radio-label:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 .yt-dm-radio-input {
-  display: none;
+    display: none;
 }
 
 .yt-dm-radio-custom {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #909090;
-  border-radius: 50%;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #909090;
+    border-radius: 50%;
+}
+
+.light-theme .yt-dm-radio-custom {
+    border-color: #ccc;
 }
 
 .yt-dm-radio-custom::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  background-color: #3ea6ff;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  transform-origin: center center;
-  transition: transform 0.2s ease;
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: #3ea6ff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transform-origin: center center;
+    transition: transform 0.2s ease;
 }
 
-.yt-dm-radio-input:checked + .yt-dm-radio-custom {
-  border-color: #3ea6ff;
+.yt-dm-radio-input:checked+.yt-dm-radio-custom {
+    border-color: #3ea6ff;
 }
 
-.yt-dm-radio-input:checked + .yt-dm-radio-custom::after {
-  transform: translate(-50%, -50%) scale(1);
+.yt-dm-radio-input:checked+.yt-dm-radio-custom::after {
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .yt-dm-radio-text {
     font-size: 16px;
     color: #f1f1f1;
     line-height: 1.2;
+}
+
+.light-theme .yt-dm-radio-text {
+    color: #000;
 }

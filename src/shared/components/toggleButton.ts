@@ -15,24 +15,6 @@ export function createToggleButton(onClick: (buttonElement: HTMLButtonElement) =
 
   toggleBtn.append(notificationDot, iconContainer);
   
-  toggleBtn.style.cssText = `
-    position: relative;
-    background: transparent; 
-    border: none; 
-    cursor: pointer; 
-    padding: 8px;
-    border-radius: 50%; 
-    width: 40px; 
-    height: 40px;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    fill: var(--yt-spec-icon-active-other, #fff);
-  `;
-  
-  toggleBtn.onmouseover = () => { toggleBtn.style.backgroundColor = 'var(--yt-spec-hover-background, rgba(255, 255, 255, 0.1))' };
-  toggleBtn.onmouseout = () => { toggleBtn.style.backgroundColor = 'transparent' };
-  
   toggleBtn.addEventListener('click', (event) => {
     event.stopPropagation();
     onClick(toggleBtn);
