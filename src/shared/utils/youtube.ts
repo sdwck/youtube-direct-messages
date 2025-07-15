@@ -55,7 +55,9 @@ export async function fetchYouTubeVideoDetails(videoId: string, timestamp?: numb
         const standardDurationEl = document.querySelector('.ytp-time-duration');
         if (standardDurationEl) {
             durationString = standardDurationEl.textContent?.trim() || '';
-        } else {
+        }
+
+        if (!durationString || durationString === '') {
             const progressBarEl = document.querySelector('.ytPlayerProgressBarDragContainer');
             const maxSecondsAttr = progressBarEl?.getAttribute('aria-valuemax');
             if (maxSecondsAttr) {
