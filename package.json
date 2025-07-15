@@ -1,12 +1,18 @@
 {
-  "name": "yt-dm-nl-extension",
+  "name": "yt-dm-nl",
   "version": "1.4.1",
-  "description": "",
-  "main": "index.js",
+  "description": "A Chrome extension to enable direct messaging functionality on YouTube.",
+  "private": true,
   "scripts": {
-    "build": "webpack"
+    "watch": "webpack --watch --mode=development",
+    "build": "webpack --mode=production",
+    "clean": "rm -rf dist"
   },
-  "keywords": [],
+  "keywords": [
+    "youtube",
+    "direct-message",
+    "chrome-extension"
+  ],
   "author": "sdwck",
   "license": "ISC",
   "devDependencies": {
