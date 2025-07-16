@@ -59,6 +59,7 @@ class NotificationService {
 
         const newUnreadIds = new Set<string>();
         for (const chat of filteredChats) {
+            if (chat.lastMessage?.from === authService.currentUser.uid) continue;
             const lastMessageTime = chat.updatedAt instanceof Timestamp ? chat.updatedAt.toDate().getTime() : 0;
             const lastReadTime = readTimestamps[chat.id] || 0;
 
