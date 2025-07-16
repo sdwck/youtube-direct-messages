@@ -24,13 +24,13 @@ class NotificationService {
 
         stateService.onViewChange(() => {
             if (stateService.getView() === ViewType.CHAT && stateService.activeChatContext && stateService.isPanelOpen()) {
-                this.markChatAsRead(stateService.activeChatContext.chatId);
+                this.markChatAsRead(stateService.activeChatContext.chat.id);
             }
         });
 
         stateService.onPanelStateChange((isOpen) => {
             if (stateService.getView() === ViewType.CHAT && stateService.activeChatContext && isOpen) {
-                this.markChatAsRead(stateService.activeChatContext.chatId);
+                this.markChatAsRead(stateService.activeChatContext.chat.id);
             }
         });
     }
@@ -64,7 +64,7 @@ class NotificationService {
             const lastReadTime = readTimestamps[chat.id] || 0;
 
             if (lastMessageTime > lastReadTime) {
-                if (stateService.activeChatContext?.chatId !== chat.id || !stateService.isPanelOpen()) {
+                if (stateService.activeChatContext?.chat.id !== chat.id || !stateService.isPanelOpen()) {
                     newUnreadIds.add(chat.id);
                 } else {
                     updateReadTimestamp(chat.id);

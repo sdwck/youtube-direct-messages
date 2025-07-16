@@ -1,22 +1,23 @@
 import { User } from '../../types/user';
-import { Message } from '../../types/message';
-import { Timestamp } from '../../libs/firebase/firebase-firestore.js';
 import { createSettingsIcon } from '../../shared/components/icons';
 import { formatTime } from '../../shared/utils/time';
 import { clearElement } from '../../shared/dom';
+import { Chat } from '../../types/chat';
+import { ChatType } from '../../types/chat';
+import { createNewGroupIcon } from '../../shared/components/icons';
+import { generateAvatarPlaceholder } from '../../shared/utils/avatar';
 
 export interface DialogItem {
-    id: string;
-    partner: User;
-    lastMessage: Message | null;
-    updatedAt: Timestamp;
+    chat: Chat;
+    partner?: User;
     isUnread: boolean;
 }
 
 export interface DialogsViewProps {
     isSharing: boolean;
-    selectDialog: (partner: User, chatId:string) => void;
+    selectDialog: (chat: Chat) => void;
     openSettings: () => void;
+    openCreateGroup: () => void;
     copyMyLink: () => string | null;
 }
 
@@ -28,14 +29,14 @@ export class DialogsView {
     constructor(private container: HTMLElement, private props: DialogsViewProps) {
         this.header = document.createElement('div');
         this.header.className = 'yt-dm-chat-header';
-        
+
         this.body = document.createElement('div');
         this.body.className = 'yt-dm-dialogs-body';
 
         this.container.append(this.header, this.body);
-        
+
         this.renderHeader();
-        
+
         if (props.isSharing) {
             const shareHeader = document.createElement('div');
             shareHeader.textContent = 'Select a conversation to share with';
@@ -43,11 +44,24 @@ export class DialogsView {
             this.body.appendChild(shareHeader);
         } else {
             this.body.appendChild(this.createCopyLinkSection());
+            this.body.appendChild(this.createNewGroupButton());
         }
-        
+
         this.listContainer = document.createElement('div');
         this.listContainer.className = 'yt-dm-dialogs-list';
         this.body.appendChild(this.listContainer);
+    }
+
+    private createNewGroupButton(): HTMLElement {
+        const buttonWrapper = document.createElement('div');
+        buttonWrapper.className = 'yt-dm-action-button-wrapper';
+
+        const button = document.createElement('button');
+        button.className = 'yt-dm-new-group-button';
+        button.onclick = (e) => { e.stopPropagation(); this.props.openCreateGroup(); };
+        button.appendChild(createNewGroupIcon());
+        buttonWrapper.append(button);
+        return buttonWrapper;
     }
 
     private renderHeader(): void {
@@ -60,14 +74,14 @@ export class DialogsView {
         settingsButton.title = 'Settings';
         settingsButton.appendChild(createSettingsIcon());
         settingsButton.onclick = (e) => { e.stopPropagation(); this.props.openSettings(); };
-        
+
         const headerControls = document.createElement('div');
         headerControls.className = 'yt-dm-header-controls';
         headerControls.appendChild(settingsButton);
 
         this.header.append(title, headerControls);
     }
-    
+
     private createCopyLinkSection(): HTMLElement {
         const container = document.createElement('div');
         container.className = 'yt-dm-copy-link-container';
@@ -81,12 +95,12 @@ export class DialogsView {
         icon.setAttribute('height', '18');
         icon.setAttribute('width', '18');
         icon.style.marginLeft = '8px';
-        
+
         const path = document.createElementNS(svgNS, 'path');
         path.setAttribute('fill', 'currentColor');
         path.setAttribute('d', 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z');
         icon.appendChild(path);
-        
+
         const span = document.createElement('span');
         span.textContent = 'Copy My Link';
         span.append(icon);
@@ -107,11 +121,11 @@ export class DialogsView {
                 });
             }
         };
-        
+
         container.appendChild(button);
         return container;
     }
-    
+
     public renderDialogs(items: DialogItem[]): void {
         clearElement(this.listContainer);
         items.forEach((item, index) => {
@@ -127,10 +141,9 @@ export class DialogsView {
         el.classList.toggle('unread', item.isUnread);
         el.classList.toggle('first', isFirst);
         el.classList.toggle('last', isLast);
-        el.onclick = (e) => { e.stopPropagation(); this.props.selectDialog(item.partner, item.id); };
+        el.onclick = (e) => { e.stopPropagation(); this.props.selectDialog(item.chat); };
 
         const avatar = document.createElement('img');
-        avatar.src = item.partner.photoURL || 'https://via.placeholder.com/40';
         avatar.className = 'yt-dm-avatar';
 
         const textContainer = document.createElement('div');
@@ -138,20 +151,38 @@ export class DialogsView {
 
         const topRow = document.createElement('div');
         topRow.className = 'yt-dm-dialog-top-row';
-        
+
         const nameSpan = document.createElement('span');
         nameSpan.className = 'name';
-        nameSpan.textContent = item.partner.displayName || 'User';
+
+        if (item.chat.type === ChatType.GROUP) {
+            nameSpan.textContent = item.chat.name || 'Group Chat';
+            avatar.src = item.chat.photoURL || generateAvatarPlaceholder(item.chat.name, 40);
+        } else {
+            if (item.partner) {
+                nameSpan.textContent = item.partner.displayName || `User...${item.partner.uid.slice(-4)}`;
+                avatar.src = item.partner.photoURL || 'https://placehold.co/40';
+            } else {
+                nameSpan.textContent = 'User';
+                avatar.src = 'https://placehold.co/40';
+            }
+        }
 
         const timeSpan = document.createElement('span');
         timeSpan.className = 'yt-dm-chat-timestamp';
-        timeSpan.textContent = formatTime(item.updatedAt);
-        
+        timeSpan.textContent = formatTime(item.chat.updatedAt);
+
         topRow.append(nameSpan, timeSpan);
 
         const lastMessageSpan = document.createElement('span');
         lastMessageSpan.className = 'yt-dm-last-message';
-        lastMessageSpan.textContent = item.lastMessage?.text || item.lastMessage?.video?.title || '...';
+
+        if (item.chat.lastMessage) {
+            lastMessageSpan.textContent = item.chat.lastMessage.text || item.chat.lastMessage.video?.title || '...'
+        } else {
+            lastMessageSpan.textContent = 'No messages yet';
+            lastMessageSpan.style.fontStyle = 'italic';
+        }
 
         textContainer.append(topRow, lastMessageSpan);
         el.append(avatar, textContainer);

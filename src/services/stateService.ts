@@ -1,18 +1,20 @@
-import { User } from '../types/user';
 import { Video } from '../types/video';
+import { Chat } from '../types/chat';
 
 export enum ViewType {
     LOGIN,
     DIALOGS,
     CHAT,
+    ADD_MEMBER,
+    EDIT_GROUP_INFO,
+    CREATE_GROUP,
     SETTINGS_MAIN,
     SETTINGS_IGNORE_LIST,
     SETTINGS_APPEARANCE
 }
 
 export interface IActiveChatContext {
-    chatId: string;
-    partner: User;
+    chat: Chat;
 }
 
 export interface IShareContext {
@@ -31,6 +33,12 @@ class StateService {
 
     public activeChatContext: IActiveChatContext | null = null;
     public shareContext: IShareContext | null = null;
+
+    public initialize(): void {
+        this.activeChatContext = null;
+        this.shareContext = null;
+        this.panelOpen = false;
+    }
 
     public setView(view: ViewType): void {
         if (this.currentView !== view) {
@@ -64,8 +72,8 @@ class StateService {
         }
     }
 
-    public openChat(context: IActiveChatContext): void {
-        this.activeChatContext = context;
+    public openChat(chat: Chat): void {
+        this.activeChatContext = { chat };
         this.setView(ViewType.CHAT);
     }
     

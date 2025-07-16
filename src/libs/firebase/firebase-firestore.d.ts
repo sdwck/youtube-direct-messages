@@ -21,6 +21,7 @@ export interface QueryDocumentSnapshot<T = DocumentData> extends DocumentSnapsho
 }
 
 export interface QuerySnapshot<T = DocumentData> {
+  readonly empty: boolean;
   readonly docs: QueryDocumentSnapshot<T>[];
   forEach(callback: (result: QueryDocumentSnapshot<T>) => void): void;
   docChanges(): Array<{ doc: QueryDocumentSnapshot<T>; type: 'added' | 'modified' | 'removed'; oldIndex: number; newIndex: number }>;
@@ -58,3 +59,4 @@ export function limitToLast(limit: number): any;
 export function collectionData<T>(collectionRef: CollectionReference<T>, options?: { idField?: string }): Promise<T[]>;
 export function arrayUnion(...elements: any[]): any;
 export function arrayRemove(...elements: any[]): any;
+export function deleteDoc(reference: DocumentReference<any>): Promise<void>;

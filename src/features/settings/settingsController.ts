@@ -49,9 +49,9 @@ export class SettingsController {
         }
     }
     
-    private removeIgnoredUser(uid: string) {
-        settingsService.removeFromIgnoreList(uid);
-        this.loadIgnoredUsers();
+    private async removeIgnoredUser(uid: string) {
+        await settingsService.removeFromIgnoreList(uid);
+        await this.loadIgnoredUsers();
     }
 
     public destroy(): void {

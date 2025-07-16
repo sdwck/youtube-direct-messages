@@ -1,5 +1,5 @@
 import { authService } from '../services/authService';
-import { stateService, ViewType, IActiveChatContext } from '../services/stateService';
+import { stateService, ViewType } from '../services/stateService';
 import { deeplinkService } from '../services/deeplinkService';
 import { notificationService } from '../services/notificationService';
 import { createToggleButton } from '../shared/components/toggleButton';
@@ -10,13 +10,17 @@ import { LoginView } from '../features/login/loginView';
 import { DialogsController } from '../features/dialogs/dialogsController';
 import { ChatController } from '../features/chat/chatController';
 import { SettingsController } from '../features/settings/settingsController';
+import { Chat } from '../types/chat';
+import { AddMemberController } from '../features/groups/addMemberController';
+import { EditGroupInfoController } from '../features/groups/editGroupInfoController';
+import { CreateGroupController } from '../features/groups/createGroupController';
 
 export class PanelController {
     private panel: HTMLElement;
     private viewContainer: HTMLElement;
     private toggleButton: HTMLButtonElement;
 
-    private activeViewController: DialogsController | ChatController | SettingsController | null = null;
+    private activeViewController: DialogsController | ChatController | SettingsController | AddMemberController | EditGroupInfoController | CreateGroupController | null = null;
 
     constructor() {
         const { shell, viewContainer } = PanelView.createShell();
@@ -31,12 +35,13 @@ export class PanelController {
     }
 
     private initializeServices(): void {
+        stateService.initialize();
         authService.initialize();
         notificationService.initialize(this.toggleButton);
         deeplinkService.initialize({
-            onTrigger: (chatContext: IActiveChatContext) => {
+            onTrigger: (chat: Chat) => {
                 if (!stateService.isPanelOpen()) this.togglePanel(true);
-                stateService.openChat(chatContext);
+                stateService.openChat(chat);
             }
         });
     }
@@ -91,6 +96,15 @@ export class PanelController {
                 break;
             case ViewType.CHAT:
                 this.activeViewController = new ChatController(this.viewContainer);
+                break;
+            case ViewType.ADD_MEMBER:
+                this.activeViewController = new AddMemberController(this.viewContainer);
+                break;
+            case ViewType.EDIT_GROUP_INFO:
+                this.activeViewController = new EditGroupInfoController(this.viewContainer);
+                break;
+            case ViewType.CREATE_GROUP:
+                this.activeViewController = new CreateGroupController(this.viewContainer);
                 break;
             case ViewType.SETTINGS_MAIN:
             case ViewType.SETTINGS_IGNORE_LIST:

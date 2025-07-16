@@ -3,8 +3,9 @@ import { chatService } from '../../services/chatService';
 import { Message } from '../../types/message';
 import { linkify } from '../utils/linkify';
 import { formatSeconds, formatTime } from '../utils/time';
+import { ChatType } from '../../types/chat';
 
-export async function createMessageElement(message: Message): Promise<HTMLElement> {
+export async function createMessageElement(message: Message, chatType: ChatType): Promise<HTMLElement> {
     const user = auth.currentUser!;
     const isOutgoing = message.from === user.uid;
 
@@ -21,6 +22,14 @@ export async function createMessageElement(message: Message): Promise<HTMLElemen
 
     const messageContentWrapper = document.createElement('div');
     messageContentWrapper.className = 'yt-dm-message-content-wrapper';
+
+    if (!isOutgoing && chatType === ChatType.GROUP) {
+        const senderProfile = await chatService.getUserProfile(message.from);
+        const senderName = document.createElement('div');
+        senderName.className = 'yt-dm-message-sender-name';
+        senderName.textContent = senderProfile.displayName || `User...${message.from.slice(-4)}`;
+        messageContentWrapper.appendChild(senderName);
+    }
 
     const bubble = document.createElement('div');
     bubble.className = 'yt-dm-message-bubble';

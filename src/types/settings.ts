@@ -4,6 +4,5 @@ export enum NotificationStyle {
 }
 
 export interface AppSettings {
-    ignoredUserIds: string[];
     notificationStyle: NotificationStyle;
 }

@@ -1,9 +1,10 @@
 import { stateService, IActiveChatContext } from './stateService';
 import { authService } from './authService';
 import { chatService } from './chatService';
+import { Chat } from '../types/chat';
 
 interface IDeepLinkCallbacks {
-    onTrigger: (chatContext: IActiveChatContext) => void;
+    onTrigger: (chat: Chat) => void;
 }
 
 class DeepLinkService {
@@ -45,7 +46,12 @@ class DeepLinkService {
         try {
             const partner = await chatService.getUserProfile(recipientUid);
             const chatId = await chatService.getOrCreateChat(recipientUid);
-            this.callbacks?.onTrigger({ chatId, partner });
+            const chat = await chatService.getChat(chatId);
+            if (chat) {
+                this.callbacks?.onTrigger(chat);
+            } else {
+                throw new Error(`Could not retrieve chat with ID: ${chatId}`);
+            }
         } catch (error) {
             console.error("Failed to open chat from link:", error);
             alert("Could not start a chat. The user's UID may be invalid.");

@@ -5,7 +5,7 @@ import { authService } from '../../services/authService';
 import { stateService, ViewType } from '../../services/stateService';
 import { notificationService } from '../../services/notificationService';
 import { DialogsView, DialogsViewProps, DialogItem } from './dialogsView';
-import { User } from '../../types/user';
+import { Chat, ChatType } from '../../types/chat';
 
 export class DialogsController {
     private view: DialogsView;
@@ -14,6 +14,7 @@ export class DialogsController {
     constructor(private container: HTMLElement) {
         const props: DialogsViewProps = {
             isSharing: !!stateService.shareContext,
+            openCreateGroup: () => stateService.setView(ViewType.CREATE_GROUP),
             selectDialog: this.selectDialog.bind(this),
             openSettings: () => stateService.setView(ViewType.SETTINGS_MAIN),
             copyMyLink: this.copyMyLink.bind(this),
@@ -26,13 +27,17 @@ export class DialogsController {
         this.view.renderLoading();
         this.chatListenerUnsubscribe = chatService.listenToChats(async (chats) => {
             if (!authService.currentUser) return;
-            
+
             const ignoredUids = await settingsService.getIgnoredUids();
             const unreadIds = notificationService.getUnreadIds();
 
             const filteredChats = chats.filter(chat => {
-                const partnerUid = chat.participants.find((p: string) => p !== authService.currentUser!.uid);
-                return partnerUid && !ignoredUids.includes(partnerUid);
+                if (chat.type !== ChatType.GROUP) {
+                    const partnerUid = chat.participants.find((p: string) => p !== authService.currentUser!.uid);
+                    return partnerUid && !ignoredUids.includes(partnerUid);
+                }
+
+                return true;
             });
 
             if (filteredChats.length === 0) {
@@ -41,28 +46,30 @@ export class DialogsController {
             }
 
             const dialogItemsPromises = filteredChats.map(async (chat): Promise<DialogItem> => {
+                const isUnread = unreadIds.has(chat.id);
+
+                if (chat.type === ChatType.GROUP)
+                    return {
+                        chat,
+                        isUnread
+                    };
+
                 const partnerUid = chat.participants.find((p: string) => p !== authService.currentUser!.uid)!;
                 const partner = await chatService.getUserProfile(partnerUid);
-                return {
-                    id: chat.id,
-                    partner,
-                    lastMessage: chat.lastMessage,
-                    updatedAt: chat.updatedAt,
-                    isUnread: unreadIds.has(chat.id)
-                };
+                return { chat, partner, isUnread };
             });
-            
+
             const dialogItems = await Promise.all(dialogItemsPromises);
             this.view.renderDialogs(dialogItems);
         });
     }
 
-    private async selectDialog(partner: User, chatId: string): Promise<void> {
+    private async selectDialog(chat: Chat): Promise<void> {
         if (stateService.shareContext) {
-            await chatService.addMessage(chatId, { video: stateService.shareContext.videoData });
+            await chatService.addMessage(chat.id, { video: stateService.shareContext.videoData });
             stateService.exitShareMode();
         }
-        stateService.openChat({ chatId, partner });
+        stateService.openChat(chat);
     }
 
     private copyMyLink(): string | null {
