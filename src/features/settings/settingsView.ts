@@ -5,6 +5,7 @@ interface SettingsViewProps {
     back: () => void;
     openIgnoreList: () => void;
     openAppearance: () => void;
+    logOut: () => void;
 }
 
 export class SettingsView {
@@ -34,17 +35,20 @@ export class SettingsView {
         const body = document.createElement('div');
         body.className = 'yt-dm-settings-menu';
 
-        const createMenuItem = (text: string, onClick: (e: Event) => void) => {
+        const createMenuItem = (text: string, isExpandable: boolean, onClick: (e: MouseEvent) => void): HTMLElement => {
             const item = document.createElement('div');
-            item.className = 'yt-dm-settings-menu__item';
+            item.className = `yt-dm-settings-menu__item ${isExpandable ? 'expandable' : ''}`;
+            if (text === 'Log Out')
+                item.style.color = '#ff4d4d';
             item.textContent = text;
             item.onclick = onClick;
             return item;
         };
 
         body.append(
-            createMenuItem('Appearance', (e) => { e.stopPropagation(); this.props.openAppearance(); }),
-            createMenuItem('Ignore List', (e) => { e.stopPropagation(); this.props.openIgnoreList(); })
+            createMenuItem('Appearance', true, (e) => { e.stopPropagation(); this.props.openAppearance(); }),
+            createMenuItem('Ignore List', true, (e) => { e.stopPropagation(); this.props.openIgnoreList(); }),
+            createMenuItem('Log Out', false, (e) => { e.stopPropagation(); this.props.logOut(); })
         );
 
         this.container.append(header, body);

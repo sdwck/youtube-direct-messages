@@ -43,3 +43,8 @@ export async function signInWithGoogle(): Promise<void> {
   const provider = new GoogleAuthProvider();
   await signInWithPopup(auth, provider);
 }
+
+export async function signOut(): Promise<void> {
+  await auth.signOut();
+  emit(DMEvents.AuthChanged, null);
+}

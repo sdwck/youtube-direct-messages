@@ -1,6 +1,6 @@
 import { on, DMEvents } from '../shared/events';
 import { User } from '../types/user';
-import { signInWithGoogle } from '../firebase/firebaseConfig';
+import { signOut, signInWithGoogle } from '../firebase/firebaseConfig';
 import { stateService, ViewType } from './stateService';
 
 class AuthService {
@@ -29,6 +29,10 @@ class AuthService {
         const handler = (user: User | null) => callback(user);
         on(DMEvents.AuthChanged, handler);
         return () => {};
+    }
+
+    public logOut(): Promise<void> {
+        return signOut();
     }
 }
 

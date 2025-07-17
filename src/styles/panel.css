@@ -799,7 +799,7 @@
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.yt-dm-settings-menu__item::after {
+.yt-dm-settings-menu__item.expandable::after {
     content: '›';
     position: absolute;
     right: 16px;
@@ -888,7 +888,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-color: #f00;
+    background-color: #e1002d;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);

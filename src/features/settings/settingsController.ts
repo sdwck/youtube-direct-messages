@@ -3,6 +3,7 @@ import { settingsService } from '../../services/settingsService';
 import { SettingsView } from './settingsView';
 import { IgnoreListView } from './ignoreListView';
 import { AppearanceView } from './appearanceView';
+import { authService } from '../../services/authService';
 
 export class SettingsController {
     private view: SettingsView | IgnoreListView | AppearanceView;
@@ -33,6 +34,7 @@ export class SettingsController {
                     back: () => stateService.setView(ViewType.DIALOGS),
                     openIgnoreList: () => stateService.setView(ViewType.SETTINGS_IGNORE_LIST),
                     openAppearance: () => stateService.setView(ViewType.SETTINGS_APPEARANCE),
+                    logOut: () => authService.logOut()
                 });
         }
     }
