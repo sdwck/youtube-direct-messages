@@ -55,6 +55,7 @@ export class ChatController {
         };
 
         this.view = new ChatView(this.container, props);
+        this.view.renderSkeleton();
         await this.fetchInitialMessages();
     }
 

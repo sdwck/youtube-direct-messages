@@ -6,6 +6,7 @@ import { Chat } from '../../types/chat';
 import { ChatType } from '../../types/chat';
 import { createNewGroupIcon } from '../../shared/components/icons';
 import { generateAvatarPlaceholder } from '../../shared/utils/avatar';
+import { createSkeletonList, createDialogItemSkeleton } from '../../shared/components/skeletonComponent';
 
 export interface DialogItem {
     chat: Chat;
@@ -190,7 +191,12 @@ export class DialogsView {
         return el;
     }
 
-    public renderLoading(): void { this.renderStateMessage('Loading conversations...'); }
+    public renderLoading(): void {
+        clearElement(this.listContainer);
+        const skeletonItems = createSkeletonList(7, createDialogItemSkeleton);
+        this.listContainer.append(...skeletonItems);
+    }
+
     public renderEmpty(): void { this.renderStateMessage('No conversations yet. Click "Copy My Link" to invite someone.'); }
 
     private renderStateMessage(text: string): void {

@@ -1,6 +1,7 @@
 import { User } from '../../types/user';
 import { createCloseIcon, createBackArrowIcon } from '../../shared/components/icons';
 import { clearElement } from '../../shared/dom';
+import { createUserItemSkeleton, createSkeletonList } from '../../shared/components/skeletonComponent';
 
 interface IgnoreListViewProps {
     back: () => void;
@@ -69,7 +70,13 @@ export class IgnoreListView {
         return item;
     }
 
-    public renderLoading(): void { this.renderStateMessage('Loading...'); }
+    public renderLoading(): void {
+        clearElement(this.list);
+        this.list.className = 'settings-list';
+        const skeletonItems = createSkeletonList(5, createUserItemSkeleton);
+        this.list.append(...skeletonItems);
+    }
+
     public renderEmpty(): void { this.renderStateMessage('Your ignore list is empty.'); }
 
     private renderStateMessage(text: string) {

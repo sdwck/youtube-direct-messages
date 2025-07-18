@@ -7,6 +7,7 @@ import { clearElement } from '../../shared/dom';
 import { Chat, ChatType } from '../../types/chat';
 import { authService } from '../../services/authService';
 import { generateAvatarPlaceholder } from '../../shared/utils/avatar';
+import { createMessageListSkeleton } from '../../shared/components/skeletonComponent';
 
 export interface ChatViewProps {
     chat: Chat;
@@ -236,6 +237,10 @@ export class ChatView {
     }
 
     public async renderMessages(msgs: Message[], chatType: ChatType, position: 'top' | 'bottom', shouldScroll?: boolean): Promise<void> {
+        if (this.messageList.querySelector('.skeleton-item')) {
+            clearElement(this.messageList);
+        }
+
         const fragment = document.createDocumentFragment();
         const isAtBottom = this.messageList.scrollHeight - this.messageList.scrollTop - this.messageList.clientHeight < 50;
         const firstVisibleMessage = position === 'top' ? this.messageList.querySelector('.yt-dm-message-container') : null;
@@ -284,6 +289,12 @@ export class ChatView {
 
     public setShareButtonState(enabled: boolean): void {
         if (this.shareButton) this.shareButton.disabled = !enabled;
+    }
+
+    public renderSkeleton(): void {
+        clearElement(this.messageList);
+        const skeletonMessages = createMessageListSkeleton();
+        this.messageList.append(...skeletonMessages);
     }
 
     public destroy(): void {

@@ -1,6 +1,7 @@
 import { createBackArrowIcon, createCloseIcon } from '../../shared/components/icons';
 import { clearElement } from '../../shared/dom';
 import { User } from '../../types/user';
+import { createUserItemSkeleton, createSkeletonList } from '../../shared/components/skeletonComponent';
 
 export interface SelectableUser extends User {
     selected: boolean;
@@ -22,21 +23,21 @@ export class UserSelectionView {
     private actionButton!: HTMLButtonElement;
 
     constructor(private container: HTMLElement, private props: UserSelectionViewProps) {
-        this.renderInitialLayout();
+        this.renderLayout();
         this.setLoading(true);
     }
 
     public renderContent(users: SelectableUser[]) {
         this.users = users;
-        this.setLoading(false);
+        this.renderUserList();
     }
 
     public showError(message: string) {
-        clearElement(this.body);
+        clearElement(this.userListContainer);
         const errorMessage = document.createElement('div');
         errorMessage.className = 'yt-dm-state-message error';
         errorMessage.textContent = message;
-        this.body.appendChild(errorMessage);
+        this.userListContainer.appendChild(errorMessage);
     }
 
     public destroy(): void {
@@ -44,31 +45,25 @@ export class UserSelectionView {
     }
 
     private setLoading(isLoading: boolean) {
-        clearElement(this.body);
+        clearElement(this.userListContainer);
         if (isLoading) {
-            const loadingMessage = document.createElement('div');
-            loadingMessage.className = 'yt-dm-state-message';
-            loadingMessage.textContent = 'Loading your contacts...';
-            this.body.appendChild(loadingMessage);
-        } else {
-            this.renderForm();
+            const skeletonItems = createSkeletonList(6, createUserItemSkeleton);
+            this.userListContainer.append(...skeletonItems);
         }
     }
-
-    private renderInitialLayout() {
+    
+    private renderLayout() {
         clearElement(this.container);
+
         const header = document.createElement('div');
         header.className = 'yt-dm-chat-header';
-
         const backBtn = document.createElement('button');
         backBtn.className = 'yt-dm-icon-button';
         backBtn.appendChild(createBackArrowIcon());
         backBtn.onclick = (e) => { e.stopPropagation(); this.props.back(); };
-
         const title = document.createElement('span');
         title.className = 'yt-dm-username';
         title.textContent = this.props.title;
-
         const leftGroup = document.createElement('div');
         leftGroup.className = 'yt-dm-chat-header-left';
         leftGroup.append(backBtn, title);
@@ -77,10 +72,6 @@ export class UserSelectionView {
         this.body = document.createElement('div');
         this.body.className = 'yt-dm-settings-body';
 
-        this.container.append(header, this.body);
-    }
-
-    private renderForm() {
         if (this.props.showGroupNameInput) {
             const wrapper = document.createElement('div');
             const nameInputWrapper = document.createElement('div');
@@ -98,6 +89,7 @@ export class UserSelectionView {
         const userListLabel = document.createElement('p');
         userListLabel.className = 'yt-dm-form-label';
         userListLabel.textContent = 'Select Members (at least 1 required)';
+        
         this.userListContainer = document.createElement('div');
         this.userListContainer.className = 'yt-dm-user-selection-list';
 
@@ -107,7 +99,8 @@ export class UserSelectionView {
         
         this.body.append(userListLabel, this.userListContainer, this.actionButton);
         
-        this.renderUserList();
+        this.container.append(header, this.body);
+
         this.setupEventListeners();
     }
 
@@ -122,6 +115,9 @@ export class UserSelectionView {
             this.actionButton.textContent = 'Processing...';
             
             await this.props.onAction(name, selectedMembers);
+            
+            this.actionButton.disabled = false;
+            this.actionButton.textContent = this.props.actionButtonText;
         });
     }
 

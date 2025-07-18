@@ -1,12 +1,11 @@
 import { stateService, ViewType } from '../../services/stateService';
 import { chatService } from '../../services/chatService';
 import { authService } from '../../services/authService';
-import { CreateGroupView, SelectableUser } from './createGroupView';
 import { User } from '../../types/user';
 import { ChatType } from '../../types/chat';
 import { settingsService } from '../../services/settingsService';
 import { Chat } from '../../types/chat';
-import { UserSelectionView } from './userSelectionView';
+import { UserSelectionView, SelectableUser } from '../groups/userSelectionView';
 
 export class CreateGroupController {
     private view: UserSelectionView;
