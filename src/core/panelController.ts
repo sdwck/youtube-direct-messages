@@ -47,6 +47,7 @@ export class PanelController {
     }
 
     private subscribeToStateChanges(): void {
+        stateService.onPanelStateChange((isOpen) => !isOpen && stateService.exitShareMode());
         stateService.onViewChange(this.renderView.bind(this));
     }
 
