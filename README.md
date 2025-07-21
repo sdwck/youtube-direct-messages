@@ -2,17 +2,12 @@
 
 A browser extension that seamlessly integrates a private messaging system directly into the YouTube interface. Chat with other users without leaving the site.
 
-## Features
-
-- **Direct Messaging:** Chat one-on-one with any other user of the extension.
-- **Real-time & Secure:** Built on Firebase Firestore for fast, reliable, and secure message delivery.
-- **YouTube Integration:** The chat panel is designed to feel like a native part of the YouTube UI.
-- **Rich Media Sharing:** Share links to YouTube videos, which are automatically converted into beautiful, clickable previews.
-- **Shareable Profile Links:** Easily invite others to chat by sharing a unique link.
-- **Unread Message Notifications:** A subtle dot on the DM icon lets you know when you have new messages.
-- **Lazy Loading:** Message history is loaded in batches for optimal performance, even in long conversations.
-
 ## Installation
+
+You can install the extension directly from the Chrome Web Store:  
+[**YouTube Direct Messages on Chrome Web Store**](https://chromewebstore.google.com/detail/youtube-direct-messages/dbkdcdmeokoneaoibbgclfafjikffibm)
+
+Alternatively, to install manually from source:
 
 1. Go to the [Releases page](https://github.com/sdwck/yt-dm-nl/releases/latest) and download the ZIP archive of the latest release.  
 2. Unzip the archive.  
@@ -31,6 +26,16 @@ cd yt-dm-nl
 npm install
 npm run build
 ```
+
+## Features
+
+- **Direct Messaging:** Chat one-on-one with any other user of the extension.
+- **Real-time & Secure:** Built on Firebase Firestore for fast, reliable, and secure message delivery.
+- **YouTube Integration:** The chat panel is designed to feel like a native part of the YouTube UI.
+- **Rich Media Sharing:** Share links to YouTube videos, which are automatically converted into beautiful, clickable previews.
+- **Shareable Profile Links:** Easily invite others to chat by sharing a unique link.
+- **Unread Message Notifications:** A subtle dot on the DM icon lets you know when you have new messages.
+- **Lazy Loading:** Message history is loaded in batches for optimal performance, even in long conversations.
 
 ## Tech Stack
 
