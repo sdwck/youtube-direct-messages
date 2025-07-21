@@ -501,6 +501,10 @@
     border-top-right-radius: 0;
 }
 
+.yt-dm-dialog-item.unread.first.last {
+    border-radius: 8px;
+}
+
 .yt-dm-dialog-item.unread .name {
     font-weight: 700;
 }
