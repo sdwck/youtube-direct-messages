@@ -22,6 +22,10 @@ interface IChatService {
     removeUserFromIgnoreList(uid: string): Promise<void>;
     deleteGroup(chatId: string): Promise<void>;
     getAllChats(): Promise<Chat[]>;
+    removeMemberFromChat(chatId: string, memberId: string): Promise<void>;
+    promoteToAdmin(chatId: string, memberId: string): Promise<void>;
+    demoteFromAdmin(chatId: string, memberId: string): Promise<void>;
+    isUserGroupAdmin(chatId: string, userId: string): Promise<boolean>;
 }
 
 export const chatService: IChatService = {
@@ -41,5 +45,9 @@ export const chatService: IChatService = {
     addUserToIgnoreList: api.addUserToIgnoreList,
     removeUserFromIgnoreList: api.removeUserFromIgnoreList,
     deleteGroup: api.deleteGroup,
-    getAllChats: api.getAllChats
+    getAllChats: api.getAllChats,
+    removeMemberFromChat: api.removeMemberFromChat,
+    promoteToAdmin: api.promoteToAdmin,
+    demoteFromAdmin: api.demoteFromAdmin,
+    isUserGroupAdmin: api.isUserGroupAdmin,
 };

@@ -15,7 +15,7 @@ export class AddMemberController {
             throw new Error("AddMemberController requires an active group chat context.");
         }
         this.chat = stateService.activeChatContext.chat;
-        
+
         this.view = new UserSelectionView(container, {
             title: 'Add New Members',
             showGroupNameInput: false,
@@ -40,7 +40,7 @@ export class AddMemberController {
             const existingMemberUids = new Set(this.chat.participants);
             const userPromises = privateChats.map(async (chat: Chat): Promise<SelectableUser | null> => {
                 const partnerUid = chat.participants.find(p => p !== authService.currentUser!.uid);
-                
+
                 if (!partnerUid) {
                     return null;
                 }
@@ -50,7 +50,7 @@ export class AddMemberController {
                 if (ignoredUids.includes(partnerUid)) {
                     return null;
                 }
-                
+
                 try {
                     const userProfile = await chatService.getUserProfile(partnerUid);
                     return { ...userProfile, selected: false };
@@ -78,11 +78,11 @@ export class AddMemberController {
 
         try {
             await chatService.addMembersToChat(this.chat.id, uidsToAdd);
-            
+
             if (stateService.activeChatContext) {
                 stateService.activeChatContext.chat.participants.push(...uidsToAdd);
             }
-            
+
             stateService.setView(ViewType.CHAT);
 
         } catch (error) {

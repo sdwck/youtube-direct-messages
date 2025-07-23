@@ -20,7 +20,7 @@ export interface ChatViewProps {
     getVideoId: () => string | null;
     leaveGroup?: () => void;
     addMember?: () => void;
-    editGroupInfo?: () => void;
+    groupInfo?: () => void;
     deleteGroup?: () => void;
 }
 
@@ -81,7 +81,7 @@ export class ChatView {
             avatar.src = this.props.chat.photoURL || generateAvatarPlaceholder(this.props.chat.name, 40);
             title.textContent = this.props.chat.name || 'Group Chat';
         } else if (this.props.partner) {
-            avatar.src = this.props.partner.photoURL || '';
+            avatar.src = this.props.partner.photoURL || generateAvatarPlaceholder(this.props.partner.displayName, 40);
             title.textContent = this.props.partner.displayName || 'Chat';
         }
 
@@ -110,13 +110,13 @@ export class ChatView {
                 addMemberOption.textContent = 'Add Member';
                 addMemberOption.onclick = (e) => { e.stopPropagation(); this.props.addMember?.(); };
 
-                const groupInfoOption = document.createElement('div');
-                groupInfoOption.className = 'yt-dm-context-menu-item';
-                groupInfoOption.textContent = 'Group Info';
-                groupInfoOption.onclick = (e) => { e.stopPropagation(); this.props.editGroupInfo?.(); };
-
-                contextMenu.append(addMemberOption, groupInfoOption);
+                contextMenu.append(addMemberOption);
             }
+
+            const groupInfoOption = document.createElement('div');
+            groupInfoOption.className = 'yt-dm-context-menu-item';
+            groupInfoOption.textContent = 'Group Info';
+            groupInfoOption.onclick = (e) => { e.stopPropagation(); this.props.groupInfo?.(); };
 
             const leaveOption = document.createElement('div');
             leaveOption.className = 'yt-dm-context-menu-item leave-group';
@@ -128,7 +128,8 @@ export class ChatView {
                 leaveOption.textContent = 'Leave Group';
                 leaveOption.onclick = (e) => { e.stopPropagation(); this.props.leaveGroup?.(); };
             }
-            contextMenu.appendChild(leaveOption);
+
+            contextMenu.append(groupInfoOption, leaveOption);
 
         } else if (this.props.partner) {
             const ignoreOption = document.createElement('div');

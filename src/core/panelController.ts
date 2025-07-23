@@ -12,7 +12,7 @@ import { ChatController } from '../features/chat/chatController';
 import { SettingsController } from '../features/settings/settingsController';
 import { Chat } from '../types/chat';
 import { AddMemberController } from '../features/groups/addMemberController';
-import { EditGroupInfoController } from '../features/groups/editGroupInfoController';
+import { GroupInfoController } from '../features/groups/groupInfoController';
 import { CreateGroupController } from '../features/groups/createGroupController';
 
 export class PanelController {
@@ -20,7 +20,7 @@ export class PanelController {
     private viewContainer: HTMLElement;
     private toggleButton: HTMLButtonElement;
 
-    private activeViewController: DialogsController | ChatController | SettingsController | AddMemberController | EditGroupInfoController | CreateGroupController | null = null;
+    private activeViewController: DialogsController | ChatController | SettingsController | AddMemberController | GroupInfoController | CreateGroupController | null = null;
 
     constructor() {
         const { shell, viewContainer } = PanelView.createShell();
@@ -101,8 +101,8 @@ export class PanelController {
             case ViewType.ADD_MEMBER:
                 this.activeViewController = new AddMemberController(this.viewContainer);
                 break;
-            case ViewType.EDIT_GROUP_INFO:
-                this.activeViewController = new EditGroupInfoController(this.viewContainer);
+            case ViewType.GROUP_INFO:
+                this.activeViewController = new GroupInfoController(this.viewContainer);
                 break;
             case ViewType.CREATE_GROUP:
                 this.activeViewController = new CreateGroupController(this.viewContainer);

@@ -261,3 +261,36 @@ export async function getAllChats(): Promise<Chat[]> {
 
     return chats;
 }
+
+export async function removeMemberFromChat(chatId: string, memberId: string): Promise<void> {
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+        participants: arrayRemove(memberId),
+        admins: arrayRemove(memberId)
+    });
+}
+
+export async function promoteToAdmin(chatId: string, memberId: string): Promise<void> {
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+        admins: arrayUnion(memberId)
+    });
+}
+
+export async function demoteFromAdmin(chatId: string, memberId: string): Promise<void> {
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+        admins: arrayRemove(memberId)
+    });
+}
+
+
+export async function isUserGroupAdmin(chatId: string, userId: string): Promise<boolean> {
+    const chatRef = doc(db, 'chats', chatId);
+    const chatSnap = await getDoc(chatRef);
+    if (chatSnap.exists()) {
+        const chatData = chatSnap.data();
+        return chatData.creator === userId || (chatData.admins || []).includes(userId);
+    }
+    return false;
+}

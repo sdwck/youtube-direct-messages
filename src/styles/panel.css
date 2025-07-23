@@ -538,7 +538,7 @@
     flex-direction: column;
     gap: 16px;
     flex-grow: 1;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .yt-dm-settings-body h2 {
@@ -1291,4 +1291,15 @@
     flex-direction: column;
     gap: 8px;
     flex-grow: 1;
+}
+
+.yt-dm-edit-group-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.yt-dm-users-section {
+    margin-bottom: 12px;
 }

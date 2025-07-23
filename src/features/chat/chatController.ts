@@ -50,7 +50,7 @@ export class ChatController {
             ignoreUser: this.chat.type !== ChatType.GROUP && this.partner ? this.ignoreUser.bind(this, this.partner.uid) : undefined,
             leaveGroup: this.chat.type === ChatType.GROUP ? this.leaveGroup.bind(this) : undefined,
             addMember: this.chat.type === ChatType.GROUP ? this.addMember.bind(this) : undefined,
-            editGroupInfo: this.chat.type === ChatType.GROUP ? this.editGroupInfo.bind(this) : undefined,
+            groupInfo: this.chat.type === ChatType.GROUP ? this.groupInfo.bind(this) : undefined,
             deleteGroup: this.chat.type === ChatType.GROUP ? this.deleteGroup.bind(this) : undefined,
         };
 
@@ -59,11 +59,11 @@ export class ChatController {
         await this.fetchInitialMessages();
     }
 
-    private editGroupInfo(): void {
+    private groupInfo(): void {
         if (this.chat.type !== ChatType.GROUP) {
             throw new Error("Edit group info is only available for group chats.");
         }
-        stateService.setView(ViewType.EDIT_GROUP_INFO);
+        stateService.setView(ViewType.GROUP_INFO);
     }
 
     private addMember(): void {

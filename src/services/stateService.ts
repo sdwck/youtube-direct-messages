@@ -6,7 +6,7 @@ export enum ViewType {
     DIALOGS,
     CHAT,
     ADD_MEMBER,
-    EDIT_GROUP_INFO,
+    GROUP_INFO,
     CREATE_GROUP,
     SETTINGS_MAIN,
     SETTINGS_IGNORE_LIST,
