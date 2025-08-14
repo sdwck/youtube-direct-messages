@@ -21,8 +21,8 @@ Alternatively, to install manually from source:
 If you’d like to build the extension yourself:
 
 ```bash
-git clone https://github.com/sdwck/yt-dm-nl.git
-cd yt-dm-nl
+git clone https://github.com/sdwck/youtube-direct-messages.git
+cd youtube-direct-messages
 npm install
 npm run build
 ```
