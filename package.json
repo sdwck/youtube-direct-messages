@@ -1,6 +1,6 @@
 {
   "name": "yt-dm-nl",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "A Chrome extension to enable direct messaging functionality on YouTube.",
   "private": true,
   "scripts": {
