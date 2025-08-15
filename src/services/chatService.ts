@@ -14,7 +14,10 @@ interface IChatService {
     listenToChats(callback: (chats: Chat[]) => void): Unsubscribe;
     listenToNewMessages(chatId: string, latestMessageTimestamp: Timestamp | null, callback: (messages: Message[]) => void): Unsubscribe;
     createGroupChat(name: string, initialParticipantUids: string[]): Promise<string>;
-    addMembersToChat(chatId: string, uidsToAdd: string[]): Promise<void>;
+    inviteUsersToChat(chatId: string, uidsToInvite: string[]): Promise<void>;
+    isUserInvitedToChat(chatId: string, uid: string): Promise<boolean>;
+    joinGroupChat(chatId: string): Promise<void>;
+    cancelGroupInvitation(chatId: string, uid: string): Promise<void>;
     leaveChat(chatId: string): Promise<void>;
     updateChatDetails(chatId: string, details: { name?: string; photoURL?: string }): Promise<void>;
     getIgnoreListUids(): Promise<string[]>;
@@ -38,7 +41,10 @@ export const chatService: IChatService = {
     listenToChats: api.listenToChats,
     listenToNewMessages: api.listenToNewMessages,
     createGroupChat: api.createGroupChat,
-    addMembersToChat: api.addMembersToChat,
+    inviteUsersToChat: api.inviteUsersToChat,
+    isUserInvitedToChat: api.isUserInvitedToChat,
+    joinGroupChat: api.joinGroupChat,
+    cancelGroupInvitation: api.cancelGroupInvitation,
     leaveChat: api.leaveChat,
     updateChatDetails: api.updateChatDetails,
     getIgnoreListUids: api.getIgnoreListUids,

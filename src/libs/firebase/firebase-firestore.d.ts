@@ -60,3 +60,4 @@ export function collectionData<T>(collectionRef: CollectionReference<T>, options
 export function arrayUnion(...elements: any[]): any;
 export function arrayRemove(...elements: any[]): any;
 export function deleteDoc(reference: DocumentReference<any>): Promise<void>;
+export function runTransaction<T>(firestore: any, updateFunction: (transaction: any) => Promise<T>): Promise<T>;

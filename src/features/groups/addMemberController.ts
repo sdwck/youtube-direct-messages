@@ -21,7 +21,7 @@ export class AddMemberController {
             showGroupNameInput: false,
             actionButtonText: 'Add to Group',
             back: () => stateService.setView(ViewType.CHAT),
-            onAction: this.addMembers.bind(this),
+            onAction: this.inviteMembers.bind(this),
         });
 
         this.loadUsers();
@@ -38,6 +38,7 @@ export class AddMemberController {
             const privateChats = allChats.filter((chat: Chat) => chat.type !== ChatType.GROUP);
             const ignoredUids = await settingsService.getIgnoredUids();
             const existingMemberUids = new Set(this.chat.participants);
+            const invitedUids = new Set(this.chat.invited || []);
             const userPromises = privateChats.map(async (chat: Chat): Promise<SelectableUser | null> => {
                 const partnerUid = chat.participants.find(p => p !== authService.currentUser!.uid);
 
@@ -48,6 +49,9 @@ export class AddMemberController {
                     return null;
                 }
                 if (ignoredUids.includes(partnerUid)) {
+                    return null;
+                }
+                if (invitedUids.has(partnerUid)) {
                     return null;
                 }
 
@@ -69,7 +73,7 @@ export class AddMemberController {
     }
 
 
-    private async addMembers(_name: string | null, members: User[]): Promise<void> {
+    private async inviteMembers(_name: string | null, members: User[]): Promise<void> {
         const uidsToAdd = members.map(m => m.uid);
         if (uidsToAdd.length === 0) {
             alert("Please select at least one user to add.");
@@ -77,11 +81,21 @@ export class AddMemberController {
         }
 
         try {
-            await chatService.addMembersToChat(this.chat.id, uidsToAdd);
+            const invitationLink = `https://www.youtube.com/?group_invitation=${this.chat.id}`;
+            const actuallyMessaged = await Promise.all(
+                uidsToAdd.map(async (uid) => {
+                    const privateChatId = await chatService.getOrCreateChat(uid);
+                    await chatService.addMessage(privateChatId, { text: invitationLink });
+                    return uid;
+                })
+            );
+
+            await chatService.inviteUsersToChat(this.chat.id, actuallyMessaged);
 
             if (stateService.activeChatContext) {
-                stateService.activeChatContext.chat.participants.push(...uidsToAdd);
+                stateService.activeChatContext.chat.invited?.push(...actuallyMessaged); // ← тут именно actuallyMessaged
             }
+
 
             stateService.setView(ViewType.CHAT);
 

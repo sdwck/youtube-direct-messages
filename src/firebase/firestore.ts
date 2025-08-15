@@ -2,7 +2,7 @@ import {
   collection, query, where, getDocs, addDoc, onSnapshot, orderBy, doc, getDoc,
   Unsubscribe, QueryDocumentSnapshot, DocumentData, serverTimestamp,
   limitToLast, startAfter, writeBatch, limit, Timestamp, arrayUnion, arrayRemove, updateDoc,
-  setDoc, deleteDoc
+  setDoc, deleteDoc, runTransaction
 } from '../libs/firebase/firebase-firestore.js';
 import { db, auth } from './firebaseConfig';
 import { User } from '../types/user';
@@ -156,7 +156,7 @@ export async function createGroupChat(name: string, initialParticipantUids: stri
   const me = auth.currentUser;
   if (!me) throw new Error('Not authenticated');
 
-  const allParticipants = [...new Set([me.uid, ...initialParticipantUids])];
+  const invited = [...new Set([...initialParticipantUids])];
 
   const newChatData = {
     type: 'group' as const,
@@ -164,7 +164,8 @@ export async function createGroupChat(name: string, initialParticipantUids: stri
     photoURL: '',
     creator: me.uid,
     admins: [me.uid],
-    participants: allParticipants,
+    invited: invited,
+    participants: [me.uid],
     updatedAt: serverTimestamp(),
     lastMessage: null,
   };
@@ -173,10 +174,55 @@ export async function createGroupChat(name: string, initialParticipantUids: stri
   return newChatRef.id;
 }
 
-export async function addMembersToChat(chatId: string, uidsToAdd: string[]): Promise<void> {
+export async function inviteUsersToChat(chatId: string, uidsToInvite: string[]): Promise<void> {
   const chatRef = doc(db, 'chats', chatId);
   await updateDoc(chatRef, {
-    participants: arrayUnion(...uidsToAdd)
+    invited: arrayUnion(...uidsToInvite)
+  });
+}
+
+export async function isUserInvitedToChat(chatId: string, uid: string): Promise<boolean> {
+  const chatRef = doc(db, 'chats', chatId);
+  const chatSnap = await getDoc(chatRef);
+  if (chatSnap.exists()) {
+    const chatData = chatSnap.data() as Chat;
+    return chatData.invited ? chatData.invited.includes(uid) : false;
+  }
+  return false;
+}
+
+export async function joinGroupChat(chatId: string): Promise<void> {
+  const me = auth.currentUser;
+  if (!me) throw new Error('Not authenticated');
+
+  const chatRef = doc(db, 'chats', chatId);
+
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(chatRef);
+    if (!snap.exists()) {
+      throw new Error(`Chat with ID ${chatId} does not exist.`);
+    }
+    const data = snap.data() as Chat;
+
+    if (!Array.isArray(data.invited) || !data.invited.includes(me.uid)) {
+      throw new Error('You are not invited to this chat.');
+    }
+    if (Array.isArray(data.participants) && data.participants.includes(me.uid)) {
+      return;
+    }
+
+    tx.update(chatRef, {
+      participants: arrayUnion(me.uid),
+      invited: arrayRemove(me.uid),
+      updatedAt: serverTimestamp()
+    });
+  });
+}
+
+export async function cancelGroupInvitation(chatId: string, uid: string): Promise<void> {
+  const chatRef = doc(db, 'chats', chatId);
+  await updateDoc(chatRef, {
+    invited: arrayRemove(uid)
   });
 }
 
@@ -246,51 +292,51 @@ export async function deleteGroup(chatId: string): Promise<void> {
 }
 
 export async function getAllChats(): Promise<Chat[]> {
-    const me = auth.currentUser;
-    if (!me) return [];
+  const me = auth.currentUser;
+  if (!me) return [];
 
-    const chatsCol = collection(db, 'chats');
-    const q = query(chatsCol, where('participants', 'array-contains', me.uid));
-    
-    const snapshot = await getDocs(q);
-    
-    const chats: Chat[] = [];
-    snapshot.forEach(doc => {
-        chats.push({ id: doc.id, ...doc.data() } as Chat);
-    });
+  const chatsCol = collection(db, 'chats');
+  const q = query(chatsCol, where('participants', 'array-contains', me.uid));
 
-    return chats;
+  const snapshot = await getDocs(q);
+
+  const chats: Chat[] = [];
+  snapshot.forEach(doc => {
+    chats.push({ id: doc.id, ...doc.data() } as Chat);
+  });
+
+  return chats;
 }
 
 export async function removeMemberFromChat(chatId: string, memberId: string): Promise<void> {
-    const chatRef = doc(db, 'chats', chatId);
-    await updateDoc(chatRef, {
-        participants: arrayRemove(memberId),
-        admins: arrayRemove(memberId)
-    });
+  const chatRef = doc(db, 'chats', chatId);
+  await updateDoc(chatRef, {
+    participants: arrayRemove(memberId),
+    admins: arrayRemove(memberId)
+  });
 }
 
 export async function promoteToAdmin(chatId: string, memberId: string): Promise<void> {
-    const chatRef = doc(db, 'chats', chatId);
-    await updateDoc(chatRef, {
-        admins: arrayUnion(memberId)
-    });
+  const chatRef = doc(db, 'chats', chatId);
+  await updateDoc(chatRef, {
+    admins: arrayUnion(memberId)
+  });
 }
 
 export async function demoteFromAdmin(chatId: string, memberId: string): Promise<void> {
-    const chatRef = doc(db, 'chats', chatId);
-    await updateDoc(chatRef, {
-        admins: arrayRemove(memberId)
-    });
+  const chatRef = doc(db, 'chats', chatId);
+  await updateDoc(chatRef, {
+    admins: arrayRemove(memberId)
+  });
 }
 
 
 export async function isUserGroupAdmin(chatId: string, userId: string): Promise<boolean> {
-    const chatRef = doc(db, 'chats', chatId);
-    const chatSnap = await getDoc(chatRef);
-    if (chatSnap.exists()) {
-        const chatData = chatSnap.data();
-        return chatData.creator === userId || (chatData.admins || []).includes(userId);
-    }
-    return false;
+  const chatRef = doc(db, 'chats', chatId);
+  const chatSnap = await getDoc(chatRef);
+  if (chatSnap.exists()) {
+    const chatData = chatSnap.data();
+    return chatData.creator === userId || (chatData.admins || []).includes(userId);
+  }
+  return false;
 }

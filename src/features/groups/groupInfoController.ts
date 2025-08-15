@@ -9,6 +9,7 @@ export class GroupInfoController {
     private view: GroupInfoView | null = null;
     private chat: Chat;
     private participants: User[] = [];
+    private invited: User[] = [];
 
     constructor(private container: HTMLElement) {
         if (!stateService.activeChatContext || stateService.activeChatContext.chat.type !== ChatType.GROUP) {
@@ -23,6 +24,7 @@ export class GroupInfoController {
         this.view = new GroupInfoView(this.container);
         this.view.renderLoading();
         await this.loadParticipants();
+        await this.loadInvitedUsers();
         this.renderView();
     }
 
@@ -33,11 +35,13 @@ export class GroupInfoController {
         this.view?.render({
             chat: this.chat,
             participants: this.participants,
+            invited: this.invited,
             currentUser,
             isEditable,
             back: () => stateService.setView(ViewType.CHAT),
             saveChanges: this.saveChanges.bind(this),
             removeMember: this.removeMember.bind(this),
+            cancelInvite: this.cancelInvite.bind(this),
             promoteToAdmin: this.promoteToAdmin.bind(this),
             demoteFromAdmin: this.demoteFromAdmin.bind(this),
         });
@@ -51,6 +55,20 @@ export class GroupInfoController {
             })
         );
         this.participants = (await Promise.all(participantPromises)).filter(p => p !== null) as User[];
+    }
+
+    private async loadInvitedUsers(): Promise<void> {
+        const invitedPromises = this.chat.invited?.map(uid =>
+            chatService.getUserProfile(uid).catch(err => {
+                console.warn(`Could not fetch invited user profile for UID: ${uid}`, err);
+                return null;
+            })
+        );
+        if (!invitedPromises) {
+            this.invited = [];
+            return;
+        }
+        this.invited = (await Promise.all(invitedPromises)).filter(p => p !== null) as User[];
     }
 
     private async saveChanges(newName: string, newPhotoURL: string): Promise<void> {
@@ -76,6 +94,23 @@ export class GroupInfoController {
             console.error("Failed to update group info:", error);
             alert("Could not update group info. Please try again.");
             throw error;
+        }
+    }
+
+    private async cancelInvite(memberId: string): Promise<void> {
+        if (!this.chat.invited?.includes(memberId)) {
+            alert("This user is not invited to the group.");
+            return;
+        }
+
+        try {
+            await chatService.cancelGroupInvitation(this.chat.id, memberId);
+            this.invited = this.invited.filter(user => user.uid !== memberId);
+            this.chat.invited = this.chat.invited?.filter(uid => uid !== memberId);
+            this.renderView();
+        } catch (error) {
+            console.error("Failed to cancel invitation:", error);
+            alert("Could not cancel the invitation. Please try again.");
         }
     }
 

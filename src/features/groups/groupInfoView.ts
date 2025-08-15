@@ -8,19 +8,21 @@ import { createSkeletonList, createUserItemSkeleton } from '../../shared/compone
 export interface GroupInfoViewProps {
     chat: Chat;
     participants: User[];
+    invited: User[];
     currentUser: User;
     back: () => void;
     isEditable: boolean;
     saveChanges: (newName: string, newPhotoURL: string) => Promise<void>;
     removeMember: (memberId: string) => Promise<void>;
+    cancelInvite: (memberId: string) => Promise<void>;
     promoteToAdmin: (memberId: string) => Promise<void>;
     demoteFromAdmin: (memberId: string) => Promise<void>;
 }
 
 export class GroupInfoView {
     private props: GroupInfoViewProps | null = null;
-    
-    constructor(private container: HTMLElement) {}
+
+    constructor(private container: HTMLElement) { }
 
     public render(props: GroupInfoViewProps) {
         this.props = props;
@@ -40,7 +42,7 @@ export class GroupInfoView {
 
         const membersSection = this.createMembersSection();
         body.appendChild(membersSection);
-        
+
         this.container.append(header, body);
 
         if (props.isEditable) {
@@ -67,7 +69,7 @@ export class GroupInfoView {
         header.append(leftGroup);
         return header;
     }
-    
+
     private createEditableForm(): HTMLElement {
         const section = document.createElement('div');
         section.className = 'yt-dm-edit-group-section';
@@ -110,13 +112,13 @@ export class GroupInfoView {
         photoInput.value = this.props!.chat.photoURL || '';
         photoInput.placeholder = generateAvatarPlaceholder(nameInput.value, 48);
         photoInputWrapper.append(photoInput);
-        
+
         const submitButton = document.createElement('button');
         submitButton.id = 'group-info-save-btn';
         submitButton.type = 'submit';
         submitButton.className = 'yt-dm-button-primary';
         submitButton.textContent = 'Save Changes';
-        
+
         form.append(nameLabel, nameInputWrapper, photoLabel, photoInputWrapper);
         section.append(avatarContainer, form, submitButton);
         return section;
@@ -132,33 +134,123 @@ export class GroupInfoView {
         previewAvatar.className = 'yt-dm-avatar-preview';
         previewAvatar.src = this.props!.chat.photoURL || generateAvatarPlaceholder(this.props!.chat.name, 96);
         avatarContainer.appendChild(previewAvatar);
-        
+
         const nameDisplay = document.createElement('h3');
         nameDisplay.textContent = this.props!.chat.name || 'Group Chat';
         nameDisplay.style.textAlign = 'center';
         nameDisplay.style.marginTop = '16px';
-        
+
         section.append(avatarContainer, nameDisplay);
         return section;
     }
 
     private createMembersSection(): HTMLElement {
         const section = document.createElement('div');
-        const title = document.createElement('h3');
-        title.textContent = `Members (${this.props!.participants.length})`;
-        title.style.borderBottom = '1px solid var(--yt-spec-badge-chip-background)';
-        title.style.paddingBottom = '8px';
-        title.style.marginBottom = '8px';
 
-        const list = document.createElement('div');
-        list.className = 'settings-list';
-        list.style.marginBottom = '0';
+        const membersTitle = document.createElement('h3');
+        membersTitle.textContent = `Members (${this.props!.participants.length})`;
+        membersTitle.style.borderBottom = '1px solid var(--yt-spec-badge-chip-background)';
+        membersTitle.style.paddingBottom = '8px';
+        membersTitle.style.marginBottom = '8px';
+
+        const membersList = document.createElement('div');
+        membersList.className = 'settings-list';
+        membersList.style.marginBottom = '0';
         this.props!.participants.forEach(p => {
-            list.appendChild(this.createParticipantElement(p));
+            membersList.appendChild(this.createParticipantElement(p));
         });
 
-        section.append(title, list);
+        section.append(membersTitle, membersList);
+
+        const invitedUsers = this.props!.invited;
+        if (invitedUsers && invitedUsers.length > 0) {
+            const invitedTitle = document.createElement('h3');
+            invitedTitle.textContent = `Invited (${invitedUsers.length})`;
+            invitedTitle.style.borderBottom = '1px solid var(--yt-spec-badge-chip-background)';
+            invitedTitle.style.paddingBottom = '8px';
+            invitedTitle.style.margin = '24px 0 8px 0';
+
+            const invitedList = document.createElement('div');
+            invitedList.className = 'settings-list';
+            invitedList.style.marginBottom = '0';
+            invitedUsers.forEach(user => {
+                invitedList.appendChild(this.createInvitedUserElement(user));
+            });
+
+            section.append(invitedTitle, invitedList);
+        }
+
         return section;
+    }
+
+    private createInvitedUserElement(user: User): HTMLElement {
+        const item = document.createElement('div');
+        item.className = 'settings-list-item';
+        item.style.flexGrow = '1';
+
+        const avatar = document.createElement('img');
+        avatar.className = 'yt-dm-avatar-medium';
+        avatar.src = user.photoURL || generateAvatarPlaceholder(user.displayName, 40);
+
+        const info = document.createElement('div');
+        info.style.display = 'flex';
+        info.style.flexDirection = 'column';
+
+        const name = document.createElement('span');
+        name.textContent = user.displayName || `User...${user.uid.slice(-4)}`;
+        info.appendChild(name);
+
+        const statusBadge = document.createElement('span');
+        statusBadge.textContent = 'Invited';
+        statusBadge.style.fontSize = '12px';
+        statusBadge.style.color = 'var(--yt-spec-text-secondary)';
+        statusBadge.style.fontWeight = '500';
+        info.appendChild(statusBadge);
+
+        item.append(avatar, info);
+
+        const wrapper = document.createElement('div');
+        wrapper.style.display = 'flex';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.width = '100%';
+
+        const menu = this.createInvitedUserMenu(user);
+        wrapper.append(item, menu);
+
+        return wrapper;
+    }
+
+    private createInvitedUserMenu(targetUser: User): HTMLElement {
+        const menuContainer = document.createElement('div');
+        menuContainer.style.position = 'relative';
+
+        const { currentUser, chat } = this.props!;
+        const isCurrentUserAdmin = chat.admins?.includes(currentUser.uid);
+
+        if (!isCurrentUserAdmin) {
+            return menuContainer;
+        }
+
+        const moreButton = document.createElement('button');
+        moreButton.className = 'yt-dm-icon-button';
+        moreButton.appendChild(createMoreVertIcon());
+
+        const contextMenu = document.createElement('div');
+        contextMenu.className = 'yt-dm-context-menu';
+
+        const cancelInviteItem = this.createMenuItem('Cancel Invitation', () => this.props!.cancelInvite(targetUser.uid));
+        cancelInviteItem.style.color = '#ff4d4d';
+        contextMenu.appendChild(cancelInviteItem);
+
+        moreButton.onclick = (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.yt-dm-context-menu.visible').forEach(m => m.classList.remove('visible'));
+            contextMenu.classList.toggle('visible');
+            setTimeout(() => document.addEventListener('click', () => contextMenu.classList.remove('visible'), { once: true }), 0);
+        };
+
+        menuContainer.append(moreButton, contextMenu);
+        return menuContainer;
     }
 
     private createParticipantElement(user: User): HTMLElement {
@@ -172,7 +264,7 @@ export class GroupInfoView {
         const info = document.createElement('div');
         info.style.display = 'flex';
         info.style.flexDirection = 'column';
-        
+
         const name = document.createElement('span');
         name.textContent = user.displayName || `User...${user.uid.slice(-4)}`;
         if (user.uid === this.props!.currentUser.uid) {
@@ -182,7 +274,7 @@ export class GroupInfoView {
 
         const isCreator = user.uid === this.props!.chat.creator;
         const isAdmin = this.props!.chat.admins?.includes(user.uid);
-        
+
         if (isCreator || isAdmin) {
             const roleBadge = document.createElement('span');
             roleBadge.textContent = isCreator ? 'Creator' : 'Admin';
@@ -215,6 +307,7 @@ export class GroupInfoView {
         const isCurrentUserAdmin = chat.admins?.includes(currentUser.uid);
         const isTargetAdmin = chat.admins?.includes(targetUser.uid);
         const isTargetCreator = targetUser.uid === chat.creator;
+        const isUserInvited = chat.invited?.includes(targetUser.uid);
 
         if (targetUser.uid === currentUser.uid) {
             return menuContainer;
@@ -231,7 +324,7 @@ export class GroupInfoView {
         const moreButton = document.createElement('button');
         moreButton.className = 'yt-dm-icon-button';
         moreButton.appendChild(createMoreVertIcon());
-        
+
         const contextMenu = document.createElement('div');
         contextMenu.className = 'yt-dm-context-menu';
 
@@ -246,14 +339,14 @@ export class GroupInfoView {
             kickItem.style.color = '#ff4d4d';
             contextMenu.appendChild(kickItem);
         }
-        
+
         moreButton.onclick = (e) => {
             e.stopPropagation();
             document.querySelectorAll('.yt-dm-context-menu.visible').forEach(m => m.classList.remove('visible'));
             contextMenu.classList.toggle('visible');
             setTimeout(() => document.addEventListener('click', () => contextMenu.classList.remove('visible'), { once: true }), 0);
         };
-        
+
         menuContainer.append(moreButton, contextMenu);
         return menuContainer;
     }
@@ -280,7 +373,7 @@ export class GroupInfoView {
             const newName = nameInput.value.trim();
             if (!newName) return;
             const newPhotoURL = photoInput.value.trim();
-            
+
             this.setLoading(true);
             try {
                 await this.props!.saveChanges(newName, newPhotoURL);
@@ -293,7 +386,7 @@ export class GroupInfoView {
         submitButton.addEventListener('click', (e) => {
             if (form.checkValidity()) handleSubmit(e);
         });
-        
+
         photoInput.addEventListener('input', () => {
             const url = photoInput.value.trim();
             if (url) {
@@ -321,7 +414,7 @@ export class GroupInfoView {
         const nameInput = this.container.querySelector<HTMLInputElement>('#group-name-input');
         const photoInput = this.container.querySelector<HTMLInputElement>('#group-photo-input');
         const submitButton = this.container.querySelector<HTMLButtonElement>('#group-info-save-btn');
-        
+
         if (nameInput) nameInput.disabled = isLoading;
         if (photoInput) photoInput.disabled = isLoading;
         if (submitButton) {

@@ -67,6 +67,15 @@ export class CreateGroupController {
         try {
             const chatId = await chatService.createGroupChat(name, memberUids);
             const newChat = await chatService.getChat(chatId);
+            const invitationLink = `https://www.youtube.com/?group_invitation=${chatId}`;
+            await Promise.all(
+                memberUids.map(async (uid) => {
+                    const privateChatId = await chatService.getOrCreateChat(uid);
+                    await chatService.addMessage(privateChatId, { text: invitationLink });
+                    return uid;
+                })
+            );
+
             if (newChat) {
                 stateService.openChat(newChat);
             } else {

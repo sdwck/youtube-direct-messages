@@ -9,6 +9,7 @@ export enum ChatType {
 export interface Chat {
   id: string;
   participants: string[];
+  invited?: string[];
   updatedAt: Timestamp;
   lastMessage: Message | null;
   type: ChatType;
