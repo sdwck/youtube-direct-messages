@@ -39,11 +39,9 @@ npm run build
 
 ## Tech Stack
 
-- **TypeScript:** For robust, type-safe code.
-- **Firebase:**
-    - **Firestore:** Real-time NoSQL database for storing chats and messages.
-    - **Authentication:** Secure Google Sign-In for user management.
-- **Webpack:** To bundle and optimize the extension's source code.
+- **TypeScript**
+- **Firebase** (Firestore & Auth)
+- **Webpack**
 
 ## How to Use
 
