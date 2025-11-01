@@ -11,9 +11,15 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*"],
-      "js": ["inject.js"],
-      "css": ["styles/panel.css"],
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "inject.js"
+      ],
+      "css": [
+        "styles/panel.css"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -35,5 +41,10 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "yt-dm-nl"
+    }
   }
 }
