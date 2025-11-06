@@ -9,7 +9,7 @@ You can install the extension directly from the Chrome Web Store:
 
 Alternatively, to install manually from source:
 
-1. Go to the [Releases page](https://github.com/sdwck/yt-dm-nl/releases/latest) and download the ZIP archive of the latest release.  
+1. Go to the [Releases page](https://github.com/sdwck/youtube-direct-messages/releases/latest) and download the ZIP archive of the latest release.  
 2. Unzip the archive.  
 3. Open your browser and navigate to `chrome://extensions`.
 4. Enable **Developer mode** (usually toggle in the top right).
