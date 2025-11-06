@@ -10,7 +10,8 @@ export enum ViewType {
     CREATE_GROUP,
     SETTINGS_MAIN,
     SETTINGS_IGNORE_LIST,
-    SETTINGS_APPEARANCE
+    SETTINGS_APPEARANCE,
+    SETTINGS_ABOUT
 }
 
 export interface IActiveChatContext {

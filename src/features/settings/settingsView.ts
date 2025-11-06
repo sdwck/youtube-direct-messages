@@ -5,6 +5,7 @@ interface SettingsViewProps {
     back: () => void;
     openIgnoreList: () => void;
     openAppearance: () => void;
+    openAbout: () => void;
     logOut: () => void;
 }
 
@@ -48,6 +49,7 @@ export class SettingsView {
         body.append(
             createMenuItem('Appearance', true, (e) => { e.stopPropagation(); this.props.openAppearance(); }),
             createMenuItem('Ignore List', true, (e) => { e.stopPropagation(); this.props.openIgnoreList(); }),
+            createMenuItem('About', true, (e) => { e.stopPropagation(); this.props.openAbout(); }),
             createMenuItem('Log Out', false, (e) => { e.stopPropagation(); this.props.logOut(); })
         );
 

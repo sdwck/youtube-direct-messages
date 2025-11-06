@@ -110,6 +110,7 @@ export class PanelController {
             case ViewType.SETTINGS_MAIN:
             case ViewType.SETTINGS_IGNORE_LIST:
             case ViewType.SETTINGS_APPEARANCE:
+            case ViewType.SETTINGS_ABOUT:
                 this.activeViewController = new SettingsController(this.viewContainer);
                 break;
         }
