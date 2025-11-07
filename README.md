@@ -4,8 +4,12 @@ A browser extension that seamlessly integrates a private messaging system direct
 
 ## Installation
 
-You can install the extension directly from the Chrome Web Store:  
-[**YouTube Direct Messages on Chrome Web Store**](https://chromewebstore.google.com/detail/youtube-direct-messages/dbkdcdmeokoneaoibbgclfafjikffibm)
+Install directly from the browser extension stores:
+
+- [**Chrome Web Store**](https://chromewebstore.google.com/detail/youtube-direct-messages/dbkdcdmeokoneaoibbgclfafjikffibm)  
+- [**Firefox Add‑ons**](https://addons.mozilla.org/en-US/firefox/addon/youtube-direct-messages/)
+
+Installing from the stores enables automatic updates and simplifies installation.
 
 Alternatively, to install manually from source:
 
