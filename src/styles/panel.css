@@ -2,7 +2,7 @@
     position: fixed;
     width: 360px;
     height: 520px;
-    background-color: var(--yt-spec-menu-background);
+    background-color: var(--yt-spec-menu-background, #282828);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -10,7 +10,7 @@
     display: flex;
     flex-direction: column;
     font-family: "Roboto", "Arial", sans-serif;
-    color: var(--yt-spec-text-primary);
+    color: var(--yt-spec-text-primary, #fff);
     ;
 }
 
@@ -289,8 +289,8 @@
 .share-to-dm.yt-third-party-share-target-section-renderer button div.yt-share-target-renderer.icon-resize {
     --iron-icon-height: 60px;
     --iron-icon-width: 60px;
-    margin-left: var(--ytd-margin-base);
-    margin-right: var(--ytd-margin-base);
+    margin-left: var(--ytd-margin-base, 4px);
+    margin-right: var(--ytd-margin-base, 4px);
     margin-bottom: var(--ytd-margin-2x);
     display: inline-flexbox;
     display: inline-flex;
@@ -303,18 +303,18 @@
     stroke: var(--iron-icon-stroke-color, none);
     width: var(--iron-icon-width, 24px);
     height: var(--iron-icon-height, 24px);
-    animation: var(--iron-icon-animation);
-    margin-top: var(--iron-icon-margin-top);
-    padding: var(--iron-icon-padding);
+    animation: var(--iron-icon-animation, none);
+    margin-top: var(--iron-icon-margin-top, 0);
+    padding: var(--iron-icon-padding, 0);
 }
 
 .share-to-dm.yt-share-target-renderer:focus {
-    outline: 1px solid var(--yt-spec-button-chip-background-hover);
-    background-color: var(--yt-spec-button-chip-background-hover);
+    outline: 1px solid var(--yt-spec-button-chip-background-hover, rgba(255, 255, 255, 0.1));
+    background-color: var(--yt-spec-button-chip-background-hover, rgba(255, 255, 255, 0.1));
 }
 
 .share-to-dm.yt-third-party-share-target-section-renderer button #title {
-    color: var(--yt-spec-text-primary);
+    color: var(--yt-spec-text-primary, #fff);
     margin: auto;
     width: 68px;
     max-height: 42px;
@@ -573,7 +573,7 @@
 .settings-list-item span {
     font-size: 16px;
     flex-grow: 1;
-    color: var(--yt-spec-text-primary);
+    color: var(--yt-spec-text-primary, #fff);
 }
 
 .settings-list-item:hover {
@@ -613,7 +613,7 @@
 .yt-dm-state-message {
     text-align: center;
     padding: 8px;
-    color: var(--yt-spec-text-secondary);
+    color: var(--yt-spec-text-secondary, #aaaaaa);
     font-size: 14px;
 }
 
@@ -631,7 +631,7 @@
 }
 
 .yt-dm-context-menu {
-    color: var(--yt-spec-text-primary);
+    color: var(--yt-spec-text-primary, #fff);
     position: absolute;
     top: 40px;
     right: 0;
@@ -711,7 +711,7 @@
 }
 
 .yt-dm-last-message {
-    color: var(--yt-spec-text-secondary);
+    color: var(--yt-spec-text-secondary, #aaaaaa);
     font-family: "Roboto", "Arial", sans-serif;
     font-size: 1.2rem;
     line-height: 1.8rem;
@@ -1011,7 +1011,7 @@
 }
 
 .yt-dm-button-primary {
-    color: var(--yt-spec-text-primary);
+    color: var(--yt-spec-text-primary, #fff);
     border: none;
     border-radius: 18px;
     padding: 10px 16px;
@@ -1051,7 +1051,7 @@
     height: 96px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--yt-spec-badge-chip-background);
+    border: 2px solid var(--yt-spec-badge-chip-background, rgba(255, 255, 255, 0.1));
 }
 
 .yt-dm-dialog-actions {
@@ -1111,7 +1111,7 @@
 
 .yt-dm-form-label {
     font-size: 14px;
-    color: var(--yt-spec-text-secondary);
+    color: var(--yt-spec-text-secondary, #aaaaaa);
     margin: 0;
     line-height: 1.4;
 }
@@ -1124,7 +1124,7 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    border: 1px solid var(--yt-spec-badge-chip-background);
+    border: 1px solid var(--yt-spec-badge-chip-background, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     padding: 8px;
     overflow-x: hidden;

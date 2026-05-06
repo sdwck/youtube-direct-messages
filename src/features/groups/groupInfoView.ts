@@ -149,7 +149,7 @@ export class GroupInfoView {
 
         const membersTitle = document.createElement('h3');
         membersTitle.textContent = `Members (${this.props!.participants.length})`;
-        membersTitle.style.borderBottom = '1px solid var(--yt-spec-badge-chip-background)';
+        membersTitle.style.borderBottom = '1px solid var(--yt-spec-badge-chip-background, rgba(255, 255, 255, 0.1))';
         membersTitle.style.paddingBottom = '8px';
         membersTitle.style.marginBottom = '8px';
 
@@ -166,7 +166,7 @@ export class GroupInfoView {
         if (invitedUsers && invitedUsers.length > 0) {
             const invitedTitle = document.createElement('h3');
             invitedTitle.textContent = `Invited (${invitedUsers.length})`;
-            invitedTitle.style.borderBottom = '1px solid var(--yt-spec-badge-chip-background)';
+            invitedTitle.style.borderBottom = '1px solid var(--yt-spec-badge-chip-background, rgba(255, 255, 255, 0.1))';
             invitedTitle.style.paddingBottom = '8px';
             invitedTitle.style.margin = '24px 0 8px 0';
 
@@ -203,7 +203,7 @@ export class GroupInfoView {
         const statusBadge = document.createElement('span');
         statusBadge.textContent = 'Invited';
         statusBadge.style.fontSize = '12px';
-        statusBadge.style.color = 'var(--yt-spec-text-secondary)';
+        statusBadge.style.color = 'var(--yt-spec-text-secondary, #aaaaaa)';
         statusBadge.style.fontWeight = '500';
         info.appendChild(statusBadge);
 
@@ -279,7 +279,7 @@ export class GroupInfoView {
             const roleBadge = document.createElement('span');
             roleBadge.textContent = isCreator ? 'Creator' : 'Admin';
             roleBadge.style.fontSize = '12px';
-            roleBadge.style.color = 'var(--yt-spec-text-secondary)';
+            roleBadge.style.color = 'var(--yt-spec-text-secondary, #aaaaaa)';
             roleBadge.style.fontWeight = '500';
             info.appendChild(roleBadge);
         }

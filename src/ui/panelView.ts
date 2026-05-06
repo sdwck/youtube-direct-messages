@@ -2,7 +2,7 @@ export class PanelView {
     public static createShell(): { shell: HTMLElement, viewContainer: HTMLElement } {
         const shell = document.createElement('div');
         shell.id = 'yt-dm-chat-panel';
-        if (window.getComputedStyle(document.documentElement).getPropertyValue('--yt-spec-menu-background') === '#fff')
+        if (!document.documentElement.hasAttribute('dark'))
             shell.classList.add('light-theme');
         shell.style.display = 'none';
         
